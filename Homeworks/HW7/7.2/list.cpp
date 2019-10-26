@@ -4,7 +4,7 @@
 struct List
 {
 	ListElement* head = nullptr;
-	ListElement* root = nullptr;
+	ListElement* tail = nullptr;
 };
 
 struct ListElement
@@ -20,21 +20,21 @@ List* createList()
 
 bool isEmpty(List* list)
 {
-	return list->root == nullptr;
+	return list->tail == nullptr;
 }
 
 void push(List* list, int number)
 {
 	if (isEmpty(list))
 	{
-		list->root = new ListElement{ number, nullptr };
-		list->head = list->root;
-		list->root->next = list->head;
+		list->tail = new ListElement{ number, nullptr };
+		list->head = list->tail;
+		list->tail->next = list->head;
 	}
 	else
 	{
 		list->head = new ListElement{number, list->head };
-		list->root->next = list->head;
+		list->tail->next = list->head;
 	}
 }
 
@@ -45,9 +45,9 @@ void deleteElement(List* list, ListElement* previousElement)
 	{
 		list->head = help;
 	}
-	else if (previousElement->next == list->root)
+	else if (previousElement->next == list->tail)
 	{
-		list->root = previousElement;
+		list->tail = previousElement;
 	}
 	delete previousElement->next;
 	previousElement->next = help;
@@ -58,12 +58,12 @@ void printList(List* list)
 	if (!isEmpty(list))
 	{
 		ListElement* currentElement = list->head;
-		while (currentElement != list->root)
+		while (currentElement != list->tail)
 		{
 			printf("%d ", currentElement->number);
 			currentElement = currentElement->next;
 		}
-		printf("%d\n", list->root->number);
+		printf("%d\n", list->tail->number);
 	}
 }
 
