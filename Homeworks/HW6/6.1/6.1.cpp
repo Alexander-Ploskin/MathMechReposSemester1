@@ -43,6 +43,7 @@ int counting(char* string, bool &isSuccesfull)
 
 			if (isEmpty(stack))
 			{
+				deleteStack(stack);
 				isSuccesfull = false;
 				return 0;
 			}
@@ -50,6 +51,7 @@ int counting(char* string, bool &isSuccesfull)
 
 			if (isEmpty(stack))
 			{
+				deleteStack(stack);
 				isSuccesfull = false;
 				return 0;
 			}
