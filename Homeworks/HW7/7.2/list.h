@@ -22,7 +22,7 @@ bool isEmpty(List* list);
 void printList(List* list);
 
 //Находит номер выжившего воина
-int counting(List* list, int m);
+int counting(int m, int n, bool doVisualize);
 
 //Удаляет список
 void deleteList(List* list);

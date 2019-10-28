@@ -67,8 +67,15 @@ void printList(List* list)
 	}
 }
 
-int counting(List* list, int m)
+int counting(int m, int n, bool doVisualize)
 {
+	List* list = createList();
+
+	for (int i = 1; i <= n; i++)
+	{
+		push(list, i);
+	}
+
 	ListElement* currentElement = list->head;
 	while (currentElement->next != currentElement)
 	{
@@ -76,7 +83,10 @@ int counting(List* list, int m)
 		{
 			currentElement = currentElement->next;
 		}
-
+		if (doVisualize)
+		{
+			printList(list);
+		}
 		deleteElement(list, currentElement);
 	}
 	int result = currentElement->number;
