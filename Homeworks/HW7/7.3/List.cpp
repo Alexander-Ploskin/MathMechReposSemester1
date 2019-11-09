@@ -27,15 +27,37 @@ List* createList()
 	return new List;
 }
 
+void popFromTail(List* list, TypeOfValue* mainValueBuffer, TypeOfValue* additionalValueBuffer)
+{
+	if (list->head == list->tail)
+	{
+		strcpy(mainValueBuffer, list->tail->mainValue);
+		strcpy(additionalValueBuffer, list->tail->additionalValue);
+		delete list->head;
+		list->head = nullptr;
+		list->tail = nullptr;
+		list->listSize = 0;
+		return;
+	}
+	strcpy(mainValueBuffer, list->tail->mainValue);
+	strcpy(additionalValueBuffer, list->tail->additionalValue);
+	ListElement* temp = list->tail->previous;
+	delete list->tail;
+	list->tail = temp;
+	list->tail->next = nullptr;
+	list->listSize--;
+}
+
 void deleteList(List* list)
 {
-	while (!isEmpty(list))
+	while (!isEmpty(list) && list->head->next != nullptr)
 	{
 		ListElement* temp = list->head->next;
 		delete list->head;
 		list->head = temp;
 		list->head->previous = nullptr;
 	}
+	delete list->head;
 	delete list;
 }
 
@@ -75,33 +97,12 @@ void push(List* list, TypeOfValue* mainValue, TypeOfValue* additionalValue)
 	list->listSize++;
 }
 
-void popFromTail(List* list, TypeOfValue* mainValueBuffer, TypeOfValue* additionalValueBuffer)
-{
-	if (list->head == list->tail)
-	{
-		strcpy(mainValueBuffer, list->tail->mainValue);
-		strcpy(additionalValueBuffer, list->tail->additionalValue);
-		delete list->head;
-		list->head = nullptr;
-		list->tail = nullptr;
-		list->listSize = 0;
-		return;
-	}
-	strcpy(mainValueBuffer, list->tail->mainValue);
-	strcpy(additionalValueBuffer, list->tail->additionalValue);
-	ListElement* temp = list->tail->previous;
-	delete list->tail;
-	list->tail = temp;
-	list->tail->next = nullptr;
-	list->listSize--;
-}
-
 bool isLarger(List* list1, List* list2)
 {
-	return list1->tail->mainValue > list2->tail->mainValue;
+	return strcmp(list1->tail->mainValue, list2->tail->mainValue) > 0; 
 }
 
-int whatSize(List* list)
+int size(List* list)
 {
 	return list->listSize;
 }
@@ -124,6 +125,26 @@ void transfer(List* list, List* newList, int howMuch)
 		push(newList, mainValueOfTail, additionalValueOfTail);
 	}
 }
+
+bool isSorted(List* list)
+{
+	ListElement* currentElement = list->head->next;
+	char lastString[maxLength]{};
+	strcpy(lastString, list->head->mainValue);
+
+	while (currentElement != nullptr)
+	{
+		if (strcmp(currentElement->mainValue, lastString) < 0)
+		{
+			return false;
+		}
+		strcpy(lastString, currentElement->mainValue);
+		currentElement = currentElement->next;
+	}
+}
+
+
+
 
 
 

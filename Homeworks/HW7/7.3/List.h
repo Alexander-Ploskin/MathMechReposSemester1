@@ -30,10 +30,13 @@ void popFromTail(List* list, TypeOfValue* mainValueBuffer, TypeOfValue* addition
 bool isLarger(List* list1, List* list2);
 
 //Выдает размер списка
-int whatSize(List* list);
+int size(List* list);
 
 //Переносит желаемое количество элементов из одного списка в другой
 void transfer(List* list, List* newList, int howMuch);
 
 //Переносит элемент из корня одного списка в голову другого
 void pushFromListToNewList(List* list, List* newList);
+
+//Проверяет отсортированность списка
+bool isSorted(List* list);

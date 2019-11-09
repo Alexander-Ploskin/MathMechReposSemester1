@@ -1,7 +1,7 @@
 #include "MergeSort.h"
 #include "List.h"
 
-void clearList(List* listToClean, List* newList)
+void moveTheRemainder(List* listToClean, List* newList)
 {
 	while (!isEmpty(listToClean))
 	{
@@ -27,12 +27,12 @@ List* merge(List* list1, List* list2)
 
 	if (!isEmpty(list1))
 	{
-		clearList(list1, newList);
+		moveTheRemainder(list1, newList);
 	}
 
 	if (!isEmpty(list2))
 	{
-		clearList(list2, newList);
+		moveTheRemainder(list2, newList);
 	}
 
 	deleteList(list1);
@@ -43,7 +43,7 @@ List* merge(List* list1, List* list2)
 
 List* mergeSort(List* list)
 {
-	const int listSize = whatSize(list);
+	const int listSize = size(list);
 	if (listSize <= 1)
 	{
 		return list;

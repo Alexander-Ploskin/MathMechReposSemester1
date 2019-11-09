@@ -4,8 +4,38 @@
 #include "List.h"
 #include "MergeSort.h"
 
+bool test()
+{
+	List* list = createList();
+
+	FILE* filePtr = fopen("test.txt", "r");
+
+	while (!feof(filePtr))
+	{
+		char name[maxLength]{};
+		char phoneNumber[maxLength]{};
+		fscanf(filePtr, "%[^-]%*c%*c", name);
+		fscanf(filePtr, "%[^\n]%*c", phoneNumber);
+		push(list, name, phoneNumber);
+	}
+	fclose(filePtr);
+
+	list = mergeSort(list);
+
+	bool result = isSorted(list);
+
+	deleteList(list);
+
+	return result;
+}
+
 int main()
 {
+	if (!test())
+	{
+		return 1;
+	}
+
 	setlocale(LC_ALL, "Russian");
 
 	printf("Если вы хотите отсортировать записи по имени, нажмите 1\n");
@@ -43,14 +73,9 @@ int main()
 
 	list = mergeSort(list);
 
-	if (choice == 1)
-	{
-		printList(list, true);
-	}
-	else
-	{
-		printList(list, false);
-	}
+	printList(list, choice == 1);
+
+	deleteList(list);
 
 	return 0;
 }
