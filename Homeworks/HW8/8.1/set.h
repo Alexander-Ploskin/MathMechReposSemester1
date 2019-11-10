@@ -1,5 +1,8 @@
 #pragma once
 
+//Максимальная длина строк в словаре
+const int maxLength = 100;
+
 //Тип данных словарь 
 struct Set;
 
@@ -13,7 +16,7 @@ bool contains(Set* set, int key);
 Set* createSet();
 
 //Выдает запись из словаря по данному ключу
-char* getValue(Set* set, int key);
+void getValue(Set* set, int key, char* bufferString);
 
 //Добавляет новую запись в словарь
 bool add(Set* set, int key, char* string);

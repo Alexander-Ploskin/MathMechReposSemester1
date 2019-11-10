@@ -1,11 +1,12 @@
+#include <string.h>
 #include "set.h"
 
 struct SetElement
 {
-	SetElement* rightChild;
-	SetElement* leftChild;
-	int key;
-	char* string;
+	SetElement* rightChild = nullptr;
+	SetElement* leftChild = nullptr;
+	int key = 0;
+	char string[maxLength]{};
 };
 
 struct Set
@@ -48,9 +49,13 @@ Set* createSet()
 	return new Set;
 }
 
-SetElement* searchElement(Set* set, int key)
+SetElement* searchElement(Set* set, int key, SetElement*& parent)
 {
 	SetElement* currentElement = set->root;
+	if (currentElement->key == key)
+	{
+		return currentElement;
+	}
 	while (currentElement != nullptr)
 	{
 		if (currentElement->key == key)
@@ -59,72 +64,49 @@ SetElement* searchElement(Set* set, int key)
 		}
 		else if (currentElement->key < key)
 		{
+			parent = currentElement;
 			currentElement = currentElement->rightChild;
 		}
 		else
 		{
+			parent = currentElement;
 			currentElement = currentElement->leftChild;
 		}
 	}
 	return nullptr;
 }
 
-SetElement* searchOfParentOfElement(Set* set, int key)
+void getValue(Set* set, int key, char* bufferString)
 {
-	SetElement* currentElement = set->root;
 	SetElement* parent = nullptr;
-	while (currentElement != nullptr)
-	{
-		if (currentElement->key == key)
-		{
-			return parent;
-		}
-		else if (currentElement->key < key)
-		{
-			parent = currentElement;
-			currentElement = currentElement->rightChild;
-		}
-		else
-		{
-			parent = currentElement;
-			currentElement = currentElement->leftChild;
-		}
-	}
-	return nullptr;
+	strcpy(bufferString, searchElement(set, key, parent)->string);
 }
 
-char* getValue(Set* set, int key)
-{
-	return searchElement(set, key)->string;
-}
-
-bool isLeaf(SetElement* element)
-{
-	return element->rightChild == nullptr || element->leftChild == nullptr;
-}
-
-bool add(Set* set, int key, char* string)
+bool add(Set* set, int key, char* inputString)
 {
 	if (contains(set, key))
 	{
-		searchElement(set, key)->string = string;
+		SetElement* parent = nullptr;
+		strcpy(searchElement(set, key, parent)->string, inputString);
 		return false;
 	}
 
 	if (isEmpty(set))
 	{
-		set->root = new SetElement{ nullptr, nullptr, key, string };
+		set->root = new SetElement{ nullptr, nullptr, key };
+		strcpy(set->root->string, inputString);
 		return true;
 	}
 
 	SetElement* currentElement = set->root;
-	while (!isLeaf(currentElement))
+	while (true)
 	{
-		if (currentElement->key < key)
+		if (key > currentElement->key)
 		{
 			if (currentElement->rightChild == nullptr)
 			{
-				currentElement->rightChild = new SetElement{ nullptr,nullptr,key,string };
+				currentElement->rightChild = new SetElement{ nullptr, nullptr, key };
+				strcpy(currentElement->rightChild->string, inputString);
 				return true;
 			}
 			currentElement = currentElement->rightChild;
@@ -133,33 +115,36 @@ bool add(Set* set, int key, char* string)
 		{
 			if (currentElement->leftChild == nullptr)
 			{
-				currentElement->leftChild = new SetElement{ nullptr,nullptr,key,string };
+				currentElement->leftChild = new SetElement{ nullptr, nullptr, key };
+				strcpy(currentElement->leftChild->string, inputString);
 				return true;
 			}
 			currentElement = currentElement->leftChild;
 		}
 	}
-	
-	if (currentElement->key < key)
-	{
-		currentElement->rightChild = new SetElement{ nullptr,nullptr,key,string };
-	}
-	else
-	{
-		currentElement->leftChild = new SetElement{ nullptr,nullptr,key,string };
-	}
-	return true;
+	return false;
 }
 
-SetElement* searchOfNewElement(SetElement* element, SetElement*& parent)
+SetElement* searchOfNewElement(SetElement* element)
 {
 	SetElement* currentElement = element->rightChild;
 	while (currentElement->leftChild != nullptr)
 	{
-		parent = currentElement;
 		currentElement = currentElement->leftChild;
 	}
 	return currentElement;
+}
+
+void setChild(SetElement* parent, SetElement* currentChild, SetElement* newChild)
+{
+	if (parent->leftChild == currentChild)
+	{
+		parent->leftChild = newChild;
+	}
+	else
+	{
+		parent->rightChild = newChild;
+	}
 }
 
 bool remove(Set* set, int key)
@@ -168,28 +153,19 @@ bool remove(Set* set, int key)
 	{
 		return false;
 	}
-	SetElement* element = searchElement(set, key);
+	SetElement* parent = nullptr;
+	SetElement* element = searchElement(set, key, parent);
 	if (element->rightChild != nullptr && element->leftChild != nullptr)
 	{
-		if (element = set->root)
+		if (element == set->root)
 		{
-			set->root = nullptr;
+			set->root = searchOfNewElement(element);
 			delete element;
 			return true;
 		}
-		SetElement* parent = nullptr;
-		SetElement* newElement = searchOfNewElement(element, parent);
-		element->key = newElement->key;
-		element->string = newElement->string;
-		if (parent->rightChild == newElement)
-		{
-			parent->rightChild = nullptr;
-		}
-		else
-		{
-			parent->leftChild = nullptr;
-		}
-		delete newElement;
+		SetElement* newElement = searchOfNewElement(element);
+		setChild(parent, element, newElement);
+		delete element;
 		return true;
 	}
 	else if (element->rightChild != nullptr)
@@ -200,20 +176,9 @@ bool remove(Set* set, int key)
 			delete element;
 			return true;
 		}
-		else
-		{
-			SetElement* parent = searchOfParentOfElement(set, key);
-			if (parent->rightChild == element)
-			{
-				parent->rightChild = element->rightChild;
-			}
-			else
-			{
-				parent->leftChild = element->rightChild;
-			}
-			delete element;
-			return true;
-		}
+		setChild(parent, element, element->rightChild);
+		delete element;
+		return true;
 	}
 	else if (element->leftChild != nullptr)
 	{
@@ -223,32 +188,19 @@ bool remove(Set* set, int key)
 			delete element;
 			return true;
 		}
-		else
-		{
-			SetElement* parent = searchOfParentOfElement(set, key);
-			if (parent->rightChild == element)
-			{
-				parent->rightChild = element->leftChild;
-			}
-			else
-			{
-				parent->leftChild = element->leftChild;
-			}
-			delete element;
-			return true;
-		}
+		setChild(parent, element, element->leftChild);
+		delete element;
+		return true;
 	}
 	else
 	{
-		SetElement* parent = searchOfParentOfElement(set, key);
-		if (parent->rightChild == element)
+		if (set->root == element)
 		{
-			parent->rightChild = nullptr;
+			delete element;
+			set->root = nullptr;
+			return true;
 		}
-		else
-		{
-			parent->leftChild = nullptr;
-		}
+		setChild(parent, element, nullptr);
 		delete element;
 		return true;
 	}
@@ -262,8 +214,9 @@ bool substitute(Set* set, int key, char* string)
 	}
 	else
 	{
-		SetElement* element = searchElement(set, key);
-		element->string = string;
+		SetElement* parent = nullptr;
+		SetElement* element = searchElement(set, key, parent);
+		strcpy(element->string, string);
 		return true;
 	}
 }

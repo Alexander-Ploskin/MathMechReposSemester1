@@ -1,10 +1,53 @@
 ﻿#include <stdio.h>
-#include "set.h"
 #include <locale.h>
+#include <string.h>
+#include "set.h"
+
+bool test()
+{
+	Set* set = createSet();
+
+	char string1[maxLength]{ "1" };
+	int key1 = 50;
+	add(set, key1, string1);
+	char string2[maxLength]{ "2" };
+	int key2 = 25;
+	add(set, key2, string2);
+	char string3[maxLength]{ "3" };
+	int key3 = 75;
+	add(set, key3, string3);
+	char string4[maxLength]{ "4" };
+	int key4 = 60;
+	add(set, key4, string4);
+	char string5[maxLength]{ "5" };
+	int key5 = 90;
+	add(set, key5, string5);
+
+	bool test1 = contains(set, 75);
+	bool test2 = contains(set, 50);
+	bool test3 = !contains(set, 10);
+
+	char bufferString1[maxLength]{};
+	getValue(set, 60, bufferString1);
+	bool test4 = strcmp(bufferString1, string4) == 0;
+
+	remove(set, 90);
+	remove(set, 50);
+
+	bool test5 = !contains(set, 90);
+	bool test6 = !contains(set, 50);
+
+	deleteSet(set);
+
+	return test1 && test2 && test3 && test4 && test5 && test6;
+}
 
 int main()
 {
-	setlocale(LC_ALL, "Russian");
+	if (!test())
+	{
+		return 1;
+	}
 	setlocale(LC_ALL, "Russian");
 
 	int choice = -1;
@@ -29,7 +72,7 @@ int main()
 			int key = 0;
 			scanf("%d", &key);
 			printf("Введите строку:\n");
-			char* string = nullptr;
+			char string[maxLength]{};
 			scanf("%s", &string);
 			if (contains(set, key))
 			{
@@ -46,7 +89,14 @@ int main()
 			printf("Введите ключ\n");
 			int key = 0;
 			scanf("%d", &key);
-			printf("%s\n", getValue(set, key));
+			if (!contains(set, key))
+			{
+				printf("Записи с таким ключом нет в словаре\n");
+				break;
+			}
+			char bufferString[maxLength]{};
+			getValue(set, key, bufferString);
+			printf("%s\n", bufferString);
 			break;
 
 		}
@@ -78,10 +128,11 @@ int main()
 			{
 				printf("Удалить элемент не удалось\n");
 			}
+			break;
 		}
 		case 0:
 		{
-		
+			deleteSet(set);
 			break;
 		}
 		default:
@@ -89,9 +140,6 @@ int main()
 			break;
 		}
 	}
-
-	char string[] = { "Пиво" };
-	add(set, 13, string);
 
 	return 0;
 }
