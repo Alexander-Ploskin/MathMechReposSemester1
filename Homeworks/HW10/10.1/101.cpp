@@ -61,7 +61,7 @@ int main()
 	FILE* filePtr = fopen("input.txt", "r");
 
 	HashTable* table = createTable();
-	
+
 	while (!feof(filePtr))
 	{
 		char word[maxLength]{};
