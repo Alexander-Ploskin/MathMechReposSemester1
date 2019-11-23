@@ -25,7 +25,7 @@ bool add(Set* set, int key, char* string);
 bool remove(Set* set, int key);
 
 //Заменяет строку в записи с таким ключом на новую
-bool substitute(Set* set, int key, char* string);
+bool setNewValue(Set* set, int key, char* string);
 
 //Удаляет словарь
 bool deleteSet(Set* set);

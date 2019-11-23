@@ -48,6 +48,7 @@ int main()
 	{
 		return 1;
 	}
+
 	setlocale(LC_ALL, "Russian");
 
 	int choice = -1;
@@ -76,7 +77,7 @@ int main()
 			scanf("%s", &string);
 			if (contains(set, key))
 			{
-				substitute(set, key, string);
+				setNewValue(set, key, string);
 			}
 			else
 			{
