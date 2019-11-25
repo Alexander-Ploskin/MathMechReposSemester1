@@ -1,5 +1,8 @@
 #pragma once
 
+//Максимальное расстояние между городами
+const int maxDistance = 10000;
+
 //Тип данных список
 struct List;
 
@@ -20,3 +23,6 @@ void removeFromList(List* list, int vertex);
 
 //Удаляет список
 void deleteList(List* list);
+
+//Возвращает номер ближайшей вершины
+int SearchOfNearestTown(List* list, int& distanceBuffer);

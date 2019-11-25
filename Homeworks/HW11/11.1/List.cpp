@@ -91,3 +91,18 @@ void deleteList(List* list)
 	delete list;
 }
 
+int SearchOfNearestTown(List* list, int& distanceBuffer)
+{
+	int nearestVertex = 0;
+	ListElement* currentElement = list->head;
+	while (currentElement != nullptr)
+	{
+		if (currentElement->distance < distanceBuffer)
+		{
+			distanceBuffer = currentElement->distance;
+			nearestVertex = currentElement->numberOfVertex;
+		}
+		currentElement = currentElement->next;
+	}
+	return nearestVertex;
+}
