@@ -1,34 +1,20 @@
 ﻿#include <stdio.h>
 #include "List.h"
 
-void distribution(int* adjencyMatrix, int* states, int numberOfTowns, int numberOfStates)
+void distribution(List*& adjacencyList, List*& listOfOccupiedTowns)
 {
-	bool** occupiedByState = new bool* [numberOfTowns] {};
-	for (int i = 0; i < numberOfTowns; ++i)
-	{
-		occupiedByState[i] = new bool[numberOfTowns] {};
-	}
-	bool* occupied = new bool[numberOfTowns];
+	const int numberOfTowns = sizeof(adjacencyList) / sizeof(List * *);
+	const int numberOfStates = sizeof(listOfOccupiedTowns) / sizeof(List * *);
 
-	List** listsOfBoundaryTowns = new List * [numberOfStates];
-	for (int i = 0; i < numberOfStates; ++i)
+	while (true)
 	{
-		listsOfBoundaryTowns[i] = createList();
-	}
+		bool endOfDistribution = true;
 
-	bool endOfDistribution = false;
-	while (!endOfDistribution)
-	{
-		endOfDistribution = true;
 		for (int i = 0; i < numberOfStates; ++i)
 		{
-			for (int i = 0; i < numberOfStates; ++i)
-			{
-				if (!occupied[i] && adjencyMatrix[states[i]][i] != 0)
-				{
-
-				}
-			}
+			int nearestTown = 0;
+			int minDistance = maxDistance;
+			int currentNearestTown = SearchOfNearestTown(listOfOccupiedTowns[i], minDistance);
 		}
 	}
 }
@@ -43,49 +29,37 @@ int main()
 	fscanf(filePtr, "%d", &numberOfTowns);
 	fscanf(filePtr, "%d", &numberOfRoads);
 
-	printf("%d - %d\n", numberOfTowns, numberOfRoads);
+	List** adjacencyList = new List * [numberOfTowns] {};
 
-	int** adjacencyMatrix = new int*[numberOfTowns] {};
 	for (int i = 0; i < numberOfTowns; ++i)
 	{
-		adjacencyMatrix[i] = new int[numberOfTowns] {};
+		adjacencyList[i] = createList();
 	}
 
 	for (int i = 0; i < numberOfRoads; ++i)
 	{
-		int firstVertex = 0;
-		int secondVertex = 0;
+		int numberOfVertex1 = 0;
+		int numberOfVertex2 = 0;
 		int distance = 0;
-		fscanf(filePtr, "%d", &firstVertex);
-		fscanf(filePtr, "%d", &secondVertex);
-		fscanf(filePtr, "%d", &distance);
-		adjacencyMatrix[firstVertex - 1][secondVertex - 1] = distance;
-		adjacencyMatrix[secondVertex - 1][firstVertex - 1] = distance;
-	}
 
+		fscanf(filePtr, "%d", &numberOfVertex1);
+		fscanf(filePtr, "%d", numberOfVertex2);
+		fscanf(filePtr, "%d", &distance);
+
+		addToList(adjacencyList[numberOfVertex1], numberOfVertex2, distance);
+		addToList(adjacencyList[numberOfVertex2], numberOfVertex1, distance);
+	}
+	
 	int numberOfStates = 0;
 	fscanf(filePtr, "%d", &numberOfStates);
 
-	int* states = new int[numberOfStates];
+	List** listOfOccupiedTowns = new List * [numberOfStates] {};
 
 	for (int i = 0; i < numberOfStates; ++i)
 	{
-		fscanf(filePtr, "%d", &states[i]);
-		printf("%d\n", states[i]);
+		listOfOccupiedTowns[i] = createList();
+		addToList(listOfOccupiedTowns[i], i + 1, 0);
 	}
-
-	fclose(filePtr);
-
-	for (int i = 0; i < numberOfTowns; ++i)
-	{
-		for (int j = 0; j < numberOfTowns; ++j)
-		{
-			printf("%d ", adjacencyMatrix[i][j]);
-		}
-		printf("\n");
-	}
-
-	printf("%d", sizeof(states) / sizeof(int) * 2);
 
 	return 0;
 }
