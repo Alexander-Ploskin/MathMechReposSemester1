@@ -32,3 +32,6 @@ bool setNewValue(Set* set, int key, char* string);
 
 //Удаляет словарь
 bool deleteSet(Set* set);
+
+//Проверяет сбалансированность дерева
+bool balanced(Set* set);

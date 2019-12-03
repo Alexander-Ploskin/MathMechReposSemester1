@@ -1,5 +1,6 @@
-#include "set.h"
 #include <string.h>
+#include <stdio.h>
+#include "set.h"
 
 struct SetElement
 {
@@ -62,16 +63,15 @@ SetElement* searchElement(Set* set, int key, SetElement*& parent)
 	{
 		if (currentElement->key == key)
 		{
+			parent = currentElement->parent;
 			return currentElement;
 		}
 		else if (currentElement->key < key)
 		{
-			parent = currentElement;
 			currentElement = currentElement->rightChild;
 		}
 		else
 		{
-			parent = currentElement;
 			currentElement = currentElement->leftChild;
 		}
 	}
@@ -97,146 +97,219 @@ void setChild(SetElement* parent, SetElement* currentChild, SetElement* newChild
 	}
 }
 
-void simpleLeftRotation(SetElement* grandParent, SetElement* parent, SetElement* element)
+void simpleLeftRotation(Set* set, SetElement* grandParent, SetElement* parent, SetElement* element)
 {
 	parent->rightChild = element->leftChild;
-	parent->rightChild->parent = parent;
+	if (parent->rightChild != nullptr)
+	{
+		parent->rightChild->parent = parent;
+	}
 	parent->parent = element;
 	if (grandParent != nullptr)
 	{
 		setChild(grandParent, parent, element);
 	}
+	else
+	{
+		set->root = element;
+	}
 	element->parent = grandParent;
+
+	element->leftChild = parent;
+
+	if (element->balance == -1)
+	{
+		parent->balance = 0;
+		element->balance = 0;
+	}
+	else
+	{
+		parent->balance = -1;
+		element->balance = 1;
+	}
 }
 
-void simpleRightRotation(SetElement* grandParent, SetElement* parent, SetElement* element)
+void simpleRightRotation(Set* set, SetElement* grandParent, SetElement* parent, SetElement* element)
 {
 	parent->leftChild = element->rightChild;
-	parent->leftChild->parent = parent;
+	if (parent->leftChild != nullptr)
+	{
+		parent->leftChild->parent = parent;
+	}
 	parent->parent = element;
 	if (grandParent != nullptr)
 	{
 		setChild(grandParent, parent, element);
 	}
+	else
+	{
+		set->root = element;
+	}
 	element->parent = grandParent;
+
+	element->rightChild = parent;
+
+	if (element->balance == 1)
+	{
+		parent->balance = 0;
+		element->balance = 0;
+	}
+	else
+	{
+		parent->balance = 1;
+		element->balance = -1;
+	}
 }
 
-void doubleLeftRotation(SetElement* grandParent, SetElement* parent, SetElement* element)
+void doubleLeftRotation(Set* set, SetElement* grandParent, SetElement* parent, SetElement* element)
 {
+	SetElement* grandGrandParent = grandParent->parent;
+
 	parent->leftChild = element->rightChild;
-	parent->leftChild->parent = parent;
+	if (parent->leftChild != nullptr)
+	{
+		parent->leftChild->parent = parent;
+	}
 	element->rightChild = parent;
 	parent->parent = element;
 
 	grandParent->rightChild = element->leftChild;
-	grandParent->rightChild->parent = grandParent;
+	if (grandParent->rightChild != nullptr)
+	{
+		grandParent->rightChild->parent = grandParent;
+	}
 	element->leftChild = grandParent;
 	grandParent->parent = element;
 
-	if (grandParent->parent != nullptr)
+	if (grandGrandParent != nullptr)
 	{
-		setChild(grandParent->parent, grandParent, element);
+		setChild(grandGrandParent, grandParent, element);
 	}
-	element->parent = grandParent->parent;
+	else
+	{
+		set->root = element;
+	}
+	element->parent = grandGrandParent;
+
+	if (element->balance == 1)
+	{
+		grandParent->balance = 0;
+		parent->balance = -1;
+		element->balance = 0;
+	}
+	else if (element->balance == 0)
+	{
+		grandParent->balance = 0;
+		parent->balance = 0;
+		element->balance = 0;
+	}
+	else
+	{
+		grandParent->balance = 1;
+		parent->balance = 0;
+		element->balance = 0;
+	}
 }
 
-void doubleRightRotation(SetElement* grandParent, SetElement* parent, SetElement* element)
+void doubleRightRotation(Set* set, SetElement* grandParent, SetElement* parent, SetElement* element)
 {
+	SetElement* grandGrandParent = grandParent->parent;
+
 	parent->rightChild = element->leftChild;
-	parent->rightChild->parent = parent;
+	if (parent->rightChild != nullptr)
+	{
+		parent->rightChild->parent = parent;
+	}
 	element->leftChild = parent;
 	parent->parent = element;
 
 	grandParent->leftChild = element->rightChild;
-	grandParent->leftChild->parent = grandParent;
+	if (grandParent->leftChild != nullptr)
+	{
+		grandParent->leftChild->parent = grandParent;
+	}
 	element->rightChild = grandParent;
 	grandParent->parent = element;
 
-	if (grandParent->parent != nullptr)
+	if (grandGrandParent != nullptr)
 	{
-		setChild(grandParent->parent, grandParent, element);
+		setChild(grandGrandParent, grandParent, element);
 	}
-	element->parent = grandParent->parent;
+	else
+	{
+		set->root = element;
+	}
+	element->parent = grandGrandParent;
+
+	if (element->balance == -1)
+	{
+		grandParent->balance = 0;
+		parent->balance = -1;
+		element->balance = 0;
+	}
+	else if (element->balance == 0)
+	{
+		grandParent->balance = 0;
+		parent->balance = 0;
+		element->balance = 0;
+	}
+	else
+	{
+		grandParent->balance = 1;
+		parent->balance = 0;
+		element->balance = 0;
+	}
 }
 
-void rotation(SetElement* element, SetElement* child, SetElement* grandChild)
+void rotation(Set* set, SetElement* element, SetElement* child, SetElement* grandChild)
 {
 	if (element->balance == -2)
 	{
 		if (child->balance == 1)
 		{
-			doubleLeftRotation(element, child, grandChild);
-			if (grandChild->balance == 1)
-			{
-				element->balance = 0;
-				child->balance = -1;
-				grandChild->balance = 0;
-			}
-			else if (grandChild->balance == 0)
-			{
-				element->balance = 1;
-				child->balance = 0;
-				grandChild->balance = 0;
-			}
-			else
-			{
-				element->balance = 0;
-				child->balance = 0;
-				grandChild->balance = 0;
-			}
+			doubleLeftRotation(set, element, child, grandChild);
 			return;
 		}
-		simpleLeftRotation(element->parent, element, child);
-		if (child->balance == 0)
-		{
-			element->balance = 0;
-			child->balance = 0;
-		}
-		else
-		{
-			element->balance = -1;
-			child->balance = 1;
-		}
+		simpleLeftRotation(set, element->parent, element, child);
 		return;
 	}
 
 	if (child->balance == -1)
 	{
-		doubleRightRotation(element, child, grandChild);
-		if (grandChild->balance == 1)
-		{
-			element->balance = 0;
-			child->balance = 1;
-			grandChild->balance = 0;
-		}
-		else if (grandChild->balance == 0)
-		{
-			element->balance = -1;
-			child->balance = 0;
-			grandChild->balance = 0;
-		}
-		else
-		{
-			element->balance = 0;
-			child->balance = 0;
-			grandChild->balance = 0;
-		}
+		doubleRightRotation(set, element, child, grandChild);
 		return;
 	}
-	simpleRightRotation(element->parent, element, child);
-	if (child->balance == 0)
+	simpleRightRotation(set, element->parent, element, child);
+}
+
+void rotationForDeletion(Set* set, SetElement* element)
+{
+	if (element->balance == -2)
 	{
-		element->balance = 0;
-		child->balance = 0;
-	}
-	else
-	{
-		element->balance = 1;
-		child->balance = -1;
+		if (element->leftChild->balance == 1)
+		{
+			doubleLeftRotati;
+			return;
+		}
+		simpleLeftRotation(set, element->parent, )
 	}
 }
 
-void balance(SetElement* element, bool add)
+bool allright(Set* set, SetElement* element)
+{
+	SetElement* currentElement = element;
+	while (element->parent != nullptr)
+	{
+		element = element->parent;
+	}
+	if (element == set->root)
+	{
+		return true;
+	}
+	return false;
+}
+
+void balanceInCaseOfAdd(Set* set, SetElement* element)
 {
 	SetElement* currentGrandchild = nullptr;
 	SetElement* currentChild = element;
@@ -246,25 +319,11 @@ void balance(SetElement* element, bool add)
 	{
 		if (currentParent->leftChild == currentChild)
 		{
-			if (add)
-			{
-				currentParent->balance++;
-			}
-			else
-			{
-				currentParent->balance--;
-			}
+			currentParent->balance++;
 		}
 		else
 		{
-			if (add)
-			{
-				currentParent->balance--;
-			}
-			else
-			{
-				currentParent->balance++;
-			}
+			currentParent->balance--;
 		}
 
 		if (currentParent->balance == 0)
@@ -279,11 +338,11 @@ void balance(SetElement* element, bool add)
 		}
 		else
 		{
-			rotation(currentParent, currentChild, currentGrandchild);
+			rotation(set, currentParent, currentChild, currentGrandchild);
+			return;
 		}
 	}
 }
-
 
 bool add(Set* set, int key, char* inputString)
 {
@@ -310,7 +369,7 @@ bool add(Set* set, int key, char* inputString)
 			{
 				currentElement->rightChild = new SetElement{ nullptr, nullptr, currentElement, key };
 				strcpy(currentElement->rightChild->string, inputString);
-				balance(currentElement->rightChild, true);
+				balanceInCaseOfAdd(set, currentElement->rightChild);
 				return true;
 			}
 			currentElement = currentElement->rightChild;
@@ -321,7 +380,7 @@ bool add(Set* set, int key, char* inputString)
 			{
 				currentElement->leftChild = new SetElement{ nullptr, nullptr, currentElement, key };
 				strcpy(currentElement->leftChild->string, inputString);
-				balance(currentElement->leftChild, true);
+				balanceInCaseOfAdd(set, currentElement->leftChild);
 				return true;
 			}
 			currentElement = currentElement->leftChild;
@@ -340,6 +399,21 @@ SetElement* searchOfNewElement(SetElement* element, SetElement*& parent)
 	return currentElement;
 }
 
+void balanceInCaseOfRemove(Set* set, SetElement* parentOfRemovedElement)
+{
+	
+}
+
+void updateBalanceInCaseOfRemove(SetElement* parentOfRemovedElement, SetElement* removedElement)
+{
+	if (removedElement == parentOfRemovedElement->leftChild)
+	{
+		parentOfRemovedElement->balance--;
+		return;
+	}
+	parentOfRemovedElement->balance++;
+}
+
 bool remove(Set* set, int key)
 {
 	if (isEmpty(set) || !contains(set, key))
@@ -352,11 +426,13 @@ bool remove(Set* set, int key)
 	{
 		SetElement* parentOfNewElement = element;
 		SetElement* newElement = searchOfNewElement(element, parentOfNewElement);
-		element->key = newElement->key;
+		const int newKey = newElement->key;
 		strcpy(element->string, newElement->string);
 		setChild(parentOfNewElement, newElement, nullptr);
-		balance(newElement, false);
-		delete newElement;
+		updateBalanceInCaseOfRemove(parentOfNewElement, newElement);
+		remove(set, newElement->key);
+		element->key = newKey;
+		
 		return true;
 	}
 	if (element->leftChild != nullptr)
@@ -368,7 +444,8 @@ bool remove(Set* set, int key)
 			return true;
 		}
 		setChild(parent, element, element->leftChild);
-		balance(element, false);
+		updateBalanceInCaseOfRemove(parent, element);
+		
 		delete element;
 		return true;
 	}
@@ -381,7 +458,9 @@ bool remove(Set* set, int key)
 			return true;
 		}
 		setChild(parent, element, element->rightChild);
-		balance(element, false);
+		parent->balance++;
+		updateBalanceInCaseOfRemove(parent, element);
+		
 		delete element;
 		return true;
 	}
@@ -392,7 +471,8 @@ bool remove(Set* set, int key)
 		return true;
 	}
 	setChild(parent, element, nullptr);
-	balance(element, false);
+	updateBalanceInCaseOfRemove(parent, element);
+	
 	delete element;
 	return true;
 }
@@ -420,6 +500,42 @@ bool deleteSet(Set* set)
 	}
 	delete set;
 	return true;
+}
+
+int high(SetElement* element)
+{
+	if (element == nullptr)
+	{
+		return 0;
+	}
+	const int leftHigh = high(element->leftChild);
+	const int rightHigh = high(element->rightChild);
+	
+	if (leftHigh > rightHigh)
+	{
+		return leftHigh + 1;
+	}
+	return rightHigh + 1;
+}
+
+bool balancedSubtree(SetElement* element)
+{
+	if (element == nullptr)
+	{
+		return true;
+	}
+	const int leftHeight = high(element->leftChild);
+	const int rightHeight = high(element->rightChild);
+	if (element->balance != leftHeight - rightHeight)
+	{
+		return false;
+	}
+	return balancedSubtree(element->leftChild) && balancedSubtree(element->rightChild);
+}
+
+bool balanced(Set* set)
+{
+	return balancedSubtree(set->root);
 }
 
 
