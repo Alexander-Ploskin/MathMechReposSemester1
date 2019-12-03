@@ -7,35 +7,87 @@ bool test()
 {
 	Set* set = createSet();
 
-	char string1[maxLength]{ "1" };
-	int key1 = 50;
-	add(set, key1, string1);
-	char string2[maxLength]{ "2" };
-	int key2 = 25;
-	add(set, key2, string2);
-	char string3[maxLength]{ "3" };
-	int key3 = 75;
-	add(set, key3, string3);
-	char string4[maxLength]{ "4" };
-	int key4 = 60;
-	add(set, key4, string4);
-	char string5[maxLength]{ "5" };
-	int key5 = 90;
-	add(set, key5, string5);
+	char string1[] = "A";
+	char string2[] = "B";
+	char string3[] = "C";
+	char string4[] = "D";
+	char string5[] = "E";
+	char string6[] = "F";
+	char string7[] = "G";
+	char string8[] = "H";
+	char string9[] = "I";
+	char string10[] = "J";
+	char string11[] = "K";
 
-	bool test1 = contains(set, 75);
-	bool test2 = contains(set, 50);
-	bool test3 = !contains(set, 10);
+	add(set, 10, string1);
+	if (!balanced(set))
+	{
+		printf("!");
+	}
+	add(set, 20, string2);
+	if (!balanced(set))
+	{
+		printf("!");
+	}
+	add(set, 30, string3);
+	if (!balanced(set))
+	{
+		printf("!");
+	}
+	add(set, 9, string4);
+	if (!balanced(set))
+	{
+		printf("!");
+	}
+	add(set, 8, string5);
+	if (!balanced(set))
+	{
+		printf("!");
+	}
+	add(set, 35, string6);
+	if (!balanced(set))
+	{
+		printf("!");
+	}
+	add(set, 37, string7);
+	if (!balanced(set))
+	{
+		printf("!");
+	}
+	add(set, 33, string8);
+	if (!balanced(set))
+	{
+		printf("!");
+	}
+	add(set, 34, string9);
+	if (!balanced(set))
+	{
+		printf("!");
+	}
+	add(set, 6, string10);
+	if (!balanced(set))
+	{
+		printf("!");
+	}
+	add(set, 7, string11);
 
-	char bufferString1[maxLength]{};
-	getValue(set, 60, bufferString1);
-	bool test4 = strcmp(bufferString1, string4) == 0;
+	printf("%d", balanced(set));
 
-	remove(set, 90);
-	remove(set, 50);
+	bool test1 = contains(set, 37);
+	bool test2 = contains(set, 10);
 
-	bool test5 = !contains(set, 90);
-	bool test6 = !contains(set, 50);
+	remove(set, 20);
+	balanced(set);
+	remove(set, 33);
+	balanced(set);
+	remove(set, 10);
+	balanced(set);
+
+	bool test3 = !contains(set, 20);
+	bool test4 = !contains(set, 33);
+	bool test5 = !contains(set, 10);
+
+	bool test6 = balanced(set);
 
 	deleteSet(set);
 
