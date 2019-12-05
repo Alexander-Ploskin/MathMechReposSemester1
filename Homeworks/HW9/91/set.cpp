@@ -282,19 +282,6 @@ void rotation(Set* set, SetElement* element, SetElement* child, SetElement* gran
 	simpleRightRotation(set, element->parent, element, child);
 }
 
-void rotationForDeletion(Set* set, SetElement* element)
-{
-	if (element->balance == -2)
-	{
-		if (element->leftChild->balance == 1)
-		{
-			doubleLeftRotati;
-			return;
-		}
-		simpleLeftRotation(set, element->parent, )
-	}
-}
-
 bool allright(Set* set, SetElement* element)
 {
 	SetElement* currentElement = element;
@@ -399,19 +386,87 @@ SetElement* searchOfNewElement(SetElement* element, SetElement*& parent)
 	return currentElement;
 }
 
-void balanceInCaseOfRemove(Set* set, SetElement* parentOfRemovedElement)
+void rotationForRemove(Set* set, SetElement* element)
 {
-	
-}
-
-void updateBalanceInCaseOfRemove(SetElement* parentOfRemovedElement, SetElement* removedElement)
-{
-	if (removedElement == parentOfRemovedElement->leftChild)
+	if (element->balance == -2)
 	{
-		parentOfRemovedElement->balance--;
+		SetElement* child = element->rightChild;
+		if (child->balance == 1)
+		{
+			SetElement* grandChild = child->leftChild;
+			doubleLeftRotation(set, element, child, grandChild);
+			return;
+		}
+		simpleLeftRotation(set, element->parent, element, child);
 		return;
 	}
-	parentOfRemovedElement->balance++;
+	SetElement* child = element->leftChild;
+	if (child->balance == -1)
+	{
+		SetElement* grandChild = child->rightChild;
+		doubleRightRotation(set, element, child, grandChild);
+		return;
+	}
+	simpleRightRotation(set, element->parent, element, child);
+}
+
+void balanceInCaseOfRemove(Set* set, SetElement* parentOfRemovedElement)
+{
+	SetElement* currentChild = nullptr;
+	SetElement* currentParent = parentOfRemovedElement;
+	if (currentParent->balance == 1 || currentParent->balance == -1)
+	{
+		return;
+	}
+	else if (currentParent->balance == 2 || currentParent->balance == -2)
+	{
+		rotationForRemove(set, currentParent);
+		return;
+	}
+	else
+	{
+		currentChild = currentParent;
+		currentParent = currentParent->parent;
+	}
+
+	while (currentParent != nullptr)
+	{
+		if (currentParent->leftChild == currentChild)
+		{
+			currentParent->balance--;
+		}
+		else
+		{
+			currentParent->balance++;
+		}
+
+		if (currentParent->balance == 1 || currentParent->balance == -1)
+		{
+			return;
+		}
+		else if (currentParent->balance == 2 || currentParent->balance == -2)
+		{
+			rotationForRemove(set, currentParent);
+			return;
+		}
+		else
+		{
+			currentChild = currentParent;
+			currentParent = currentParent->parent;
+		}
+	}
+}
+
+void updateParentBalance(SetElement* parent, SetElement* child)
+{
+	if (parent->leftChild == child)
+	{
+		parent->balance--;
+	}
+	else if (parent->rightChild == child)
+	{
+		parent->balance++;
+	}
 }
 
 bool remove(Set* set, int key)
@@ -428,11 +483,8 @@ bool remove(Set* set, int key)
 		SetElement* newElement = searchOfNewElement(element, parentOfNewElement);
 		const int newKey = newElement->key;
 		strcpy(element->string, newElement->string);
-		setChild(parentOfNewElement, newElement, nullptr);
-		updateBalanceInCaseOfRemove(parentOfNewElement, newElement);
 		remove(set, newElement->key);
 		element->key = newKey;
-		
 		return true;
 	}
 	if (element->leftChild != nullptr)
@@ -443,10 +495,10 @@ bool remove(Set* set, int key)
 			delete element;
 			return true;
 		}
+		updateParentBalance(parent, element);
 		setChild(parent, element, element->leftChild);
-		updateBalanceInCaseOfRemove(parent, element);
-		
 		delete element;
+		balanceInCaseOfRemove(set, parent);
 		return true;
 	}
 	if (element->rightChild != nullptr)
@@ -457,11 +509,10 @@ bool remove(Set* set, int key)
 			delete element;
 			return true;
 		}
+		updateParentBalance(parent, element);
 		setChild(parent, element, element->rightChild);
-		parent->balance++;
-		updateBalanceInCaseOfRemove(parent, element);
-		
 		delete element;
+		balanceInCaseOfRemove(set, parent);
 		return true;
 	}
 	if (element == set->root)
@@ -470,10 +521,10 @@ bool remove(Set* set, int key)
 		delete element;
 		return true;
 	}
+	updateParentBalance(parent, element);
 	setChild(parent, element, nullptr);
-	updateBalanceInCaseOfRemove(parent, element);
-	
 	delete element;
+	balanceInCaseOfRemove(set, parent);
 	return true;
 }
 
@@ -492,24 +543,32 @@ bool setNewValue(Set* set, int key, char* string)
 	}
 }
 
+void deleteSubtree(SetElement* element)
+{
+	if (element == nullptr)
+	{
+		return;
+	}
+	deleteSubtree(element->rightChild);
+	deleteSubtree(element->leftChild);
+	delete element;
+}
+
 bool deleteSet(Set* set)
 {
-	while (!isEmpty(set))
-	{
-		remove(set, set->root->key);
-	}
+	deleteSubtree(set->root);
 	delete set;
 	return true;
 }
 
-int high(SetElement* element)
+int height(SetElement* element)
 {
 	if (element == nullptr)
 	{
 		return 0;
 	}
-	const int leftHigh = high(element->leftChild);
-	const int rightHigh = high(element->rightChild);
+	const int leftHigh = height(element->leftChild);
+	const int rightHigh = height(element->rightChild);
 	
 	if (leftHigh > rightHigh)
 	{
@@ -524,8 +583,8 @@ bool balancedSubtree(SetElement* element)
 	{
 		return true;
 	}
-	const int leftHeight = high(element->leftChild);
-	const int rightHeight = high(element->rightChild);
+	const int leftHeight = height(element->leftChild);
+	const int rightHeight = height(element->rightChild);
 	if (element->balance != leftHeight - rightHeight)
 	{
 		return false;
@@ -537,5 +596,3 @@ bool balanced(Set* set)
 {
 	return balancedSubtree(set->root);
 }
-
-

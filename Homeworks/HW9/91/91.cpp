@@ -20,68 +20,23 @@ bool test()
 	char string11[] = "K";
 
 	add(set, 10, string1);
-	if (!balanced(set))
-	{
-		printf("!");
-	}
 	add(set, 20, string2);
-	if (!balanced(set))
-	{
-		printf("!");
-	}
 	add(set, 30, string3);
-	if (!balanced(set))
-	{
-		printf("!");
-	}
 	add(set, 9, string4);
-	if (!balanced(set))
-	{
-		printf("!");
-	}
 	add(set, 8, string5);
-	if (!balanced(set))
-	{
-		printf("!");
-	}
 	add(set, 35, string6);
-	if (!balanced(set))
-	{
-		printf("!");
-	}
 	add(set, 37, string7);
-	if (!balanced(set))
-	{
-		printf("!");
-	}
 	add(set, 33, string8);
-	if (!balanced(set))
-	{
-		printf("!");
-	}
 	add(set, 34, string9);
-	if (!balanced(set))
-	{
-		printf("!");
-	}
 	add(set, 6, string10);
-	if (!balanced(set))
-	{
-		printf("!");
-	}
 	add(set, 7, string11);
-
-	printf("%d", balanced(set));
 
 	bool test1 = contains(set, 37);
 	bool test2 = contains(set, 10);
 
 	remove(set, 20);
-	balanced(set);
 	remove(set, 33);
-	balanced(set);
 	remove(set, 10);
-	balanced(set);
 
 	bool test3 = !contains(set, 20);
 	bool test4 = !contains(set, 33);
