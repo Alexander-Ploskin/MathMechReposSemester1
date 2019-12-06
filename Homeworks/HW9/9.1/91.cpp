@@ -80,7 +80,7 @@ int main()
 			scanf("%d", &key);
 			printf("Введите строку:\n");
 			char string[maxLength]{};
-			scanf("%s", &string);
+			scanf("%s", string);
 			if (contains(set, key))
 			{
 				setNewValue(set, key, string);

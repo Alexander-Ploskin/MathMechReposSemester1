@@ -3,9 +3,6 @@
 //Максимальная длина строк в словаре
 const int maxLength = 100;
 
-//Запись в словаре
-struct SetElement;
-
 //Тип данных словарь 
 struct Set;
 

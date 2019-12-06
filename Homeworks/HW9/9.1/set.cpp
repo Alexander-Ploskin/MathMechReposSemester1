@@ -22,31 +22,6 @@ bool isEmpty(Set* set)
 	return set->root == nullptr;
 }
 
-bool contains(Set* set, int key)
-{
-	if (isEmpty(set))
-	{
-		return false;
-	}
-	SetElement* currentElement = set->root;
-	while (currentElement != nullptr)
-	{
-		if (currentElement->key == key)
-		{
-			return true;
-		}
-		else if (currentElement->key < key)
-		{
-			currentElement = currentElement->rightChild;
-		}
-		else
-		{
-			currentElement = currentElement->leftChild;
-		}
-	}
-	return false;
-}
-
 Set* createSet()
 {
 	return new Set;
@@ -78,12 +53,24 @@ SetElement* searchElement(Set* set, int key, SetElement*& parent)
 	return nullptr;
 }
 
+bool contains(Set* set, int key)
+{
+	if (isEmpty(set))
+	{
+		return false;
+	}
+	return searchElement(set, key, set->root) != nullptr;
+}
+
 void getValue(Set* set, int key, char* bufferString)
 {
+	if (!contains(set, key))
+	{
+		return;
+	}
 	SetElement* parent = nullptr;
 	strcpy(bufferString, searchElement(set, key, parent)->string);
 }
-
 
 void setChild(SetElement* parent, SetElement* currentChild, SetElement* newChild)
 {
@@ -289,11 +276,7 @@ bool allright(Set* set, SetElement* element)
 	{
 		element = element->parent;
 	}
-	if (element == set->root)
-	{
-		return true;
-	}
-	return false;
+	return element == set->root;
 }
 
 void balanceInCaseOfAdd(Set* set, SetElement* element)
@@ -567,14 +550,14 @@ int height(SetElement* element)
 	{
 		return 0;
 	}
-	const int leftHigh = height(element->leftChild);
-	const int rightHigh = height(element->rightChild);
+	const int leftHeight = height(element->leftChild);
+	const int rightHeight = height(element->rightChild);
 	
-	if (leftHigh > rightHigh)
+	if (leftHeight > rightHeight)
 	{
-		return leftHigh + 1;
+		return leftHeight + 1;
 	}
-	return rightHigh + 1;
+	return rightHeight + 1;
 }
 
 bool balancedSubtree(SetElement* element)
