@@ -1,65 +1,82 @@
 ﻿#include <stdio.h>
-#include "List.h"
 
-void distribution(List*& adjacencyList, List*& listOfOccupiedTowns)
+void printMatrix(int** matrix, int size)
 {
-	const int numberOfTowns = sizeof(adjacencyList) / sizeof(List * *);
-	const int numberOfStates = sizeof(listOfOccupiedTowns) / sizeof(List * *);
-
-	while (true)
+	for (int i = 0; i < size; ++i)
 	{
-		bool endOfDistribution = true;
-
-		for (int i = 0; i < numberOfStates; ++i)
+		for (int j = 0; j < size; ++j)
 		{
-			int nearestTown = 0;
-			int minDistance = maxDistance;
-			int currentNearestTown = SearchOfNearestTown(listOfOccupiedTowns[i], minDistance);
+			printf("%d ", matrix[i][j]);
 		}
+		printf("\n");
 	}
+}
+
+int** createMatrix(int size)
+{
+	int** matrix = new int* [size] {};
+	for (int i = 0; i < size; ++i)
+	{
+		matrix[i] = new int[size] {};
+	}
+	return matrix;
 }
 
 int main()
 {
-	FILE* filePtr = fopen("input.txt", "r");
-
 	int numberOfTowns = 0;
 	int numberOfRoads = 0;
+
+	FILE* filePtr = fopen("input.txt", "r");
 
 	fscanf(filePtr, "%d", &numberOfTowns);
 	fscanf(filePtr, "%d", &numberOfRoads);
 
-	List** adjacencyList = new List * [numberOfTowns] {};
-
-	for (int i = 0; i < numberOfTowns; ++i)
-	{
-		adjacencyList[i] = createList();
-	}
-
+	int** adjacencyMatrix = createMatrix(numberOfTowns);
+	
 	for (int i = 0; i < numberOfRoads; ++i)
 	{
-		int numberOfVertex1 = 0;
-		int numberOfVertex2 = 0;
+		int town1 = 0;
+		int town2 = 0;
 		int distance = 0;
 
-		fscanf(filePtr, "%d", &numberOfVertex1);
-		fscanf(filePtr, "%d", numberOfVertex2);
+		fscanf(filePtr, "%d", &town1);
+		fscanf(filePtr, "%d", &town2);
 		fscanf(filePtr, "%d", &distance);
 
-		addToList(adjacencyList[numberOfVertex1], numberOfVertex2, distance);
-		addToList(adjacencyList[numberOfVertex2], numberOfVertex1, distance);
+		adjacencyMatrix[town1 - 1][town2 - 1] = distance;
+		adjacencyMatrix[town2 - 1][town1 - 1] = distance;
 	}
-	
+
 	int numberOfStates = 0;
 	fscanf(filePtr, "%d", &numberOfStates);
-
-	List** listOfOccupiedTowns = new List * [numberOfStates] {};
-
+	int* capitals = new int[numberOfStates] {};
 	for (int i = 0; i < numberOfStates; ++i)
 	{
-		listOfOccupiedTowns[i] = createList();
-		addToList(listOfOccupiedTowns[i], i + 1, 0);
+		fscanf(filePtr, "%d", &capitals[i]);
 	}
+
+	fclose(filePtr);
 
 	return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
