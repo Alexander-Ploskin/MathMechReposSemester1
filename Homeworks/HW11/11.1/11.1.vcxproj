@@ -154,10 +154,12 @@
     <ClCompile Include="11.1.cpp" />
     <ClCompile Include="Distributor.cpp" />
     <ClCompile Include="List.cpp" />
+    <ClCompile Include="set.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Distributor.h" />
     <ClInclude Include="List.h" />
+    <ClInclude Include="set.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
