@@ -1,5 +1,8 @@
 #pragma once
 
+//Максимальная длина чисел
+const int maxLength = 8;
+
 //Дерево разбора арифметического выражения
 struct CountingTree;
 

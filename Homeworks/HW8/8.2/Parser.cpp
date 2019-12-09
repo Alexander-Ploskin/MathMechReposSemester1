@@ -4,7 +4,7 @@
 
 struct Node
 {
-	const char value;
+	const char value = ' ';
 	Node* parent = nullptr;
 	Node* rightChild = nullptr;
 	Node* leftChild = nullptr;
@@ -79,6 +79,10 @@ void buildTree(CountingTree* tree, char* string)
 	{
 		if (i >= length)
 		{
+			if (isNumber(string[1]))
+			{
+				addNewNode(tree, currentNode, string[1]);
+			}
 			return;
 		}
 		i++;
@@ -115,46 +119,31 @@ int countingSubtree(Node* node)
 {
 	const char token = node->value;
 
-	if (!isOperator(token))
+	if (isNumber(token))
 	{
-		return 0;
+		return token - 48;
 	}
 
-	int number1 = 0;
-	int number2 = 0;
-	if (isNumber(node->leftChild->value))
+	switch (token)
 	{
-		number1 = node->leftChild->value - 48;
+	case '+':
+	{
+		return countingSubtree(node->leftChild) + countingSubtree(node->rightChild);
 	}
-	else
+	case '*':
 	{
-		number1 = countingSubtree(node->leftChild);
+		return countingSubtree(node->leftChild) * countingSubtree(node->rightChild);
 	}
-
-	if (isNumber(node->rightChild->value))
+	case '-':
 	{
-		number2 = node->rightChild->value - 48;
+		return countingSubtree(node->leftChild) - countingSubtree(node->rightChild);
 	}
-	else
+	case '/':
 	{
-		number2 = countingSubtree(node->rightChild);
+		return countingSubtree(node->leftChild) / countingSubtree(node->rightChild);
 	}
-
-	if (token == '+')
-	{
-		return number1 + number2;
-	}
-	if (token == '-')
-	{
-		return number1 - number2;
-	}
-	if (token == '*')
-	{
-		return number1 * number2;
-	}
-	if (token == '/')
-	{
-		return number1 / number2;
+	default:
+		break;
 	}
 }
 
@@ -200,7 +189,3 @@ void deleteTree(CountingTree* tree)
 {
 	deleteSubtree(tree->root);
 }
-
-
-
-
