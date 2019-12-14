@@ -454,7 +454,62 @@ bool remove(Set* set, int distance, int vertex)
 		SetElement* newElement = searchOfNewElement(element, parentOfNewElement);
 		const int newKey = newElement->distance;
 		element->vertex = newElement->vertex;
-		remove(set, newElement->distance, vertex);
+		remove(set, newElement->distance, newElement->vertex);
+		element->distance = newKey;
+		return true;
+	}
+	if (element->leftChild != nullptr)
+	{
+		if (element == set->root)
+		{
+			set->root = element->leftChild;
+			delete element;
+			return true;
+		}
+		updateParentBalance(parent, element);
+		setChild(parent, element, element->leftChild);
+		delete element;
+		balanceInCaseOfRemove(set, parent);
+		return true;
+	}
+	if (element->rightChild != nullptr)
+	{
+		if (element == set->root)
+		{
+			set->root = element->rightChild;
+			delete element;
+			return true;
+		}
+		updateParentBalance(parent, element);
+		setChild(parent, element, element->rightChild);
+		delete element;
+		balanceInCaseOfRemove(set, parent);
+		return true;
+	}
+	if (element == set->root)
+	{
+		set->root = nullptr;
+		delete element;
+		return true;
+	}
+	updateParentBalance(parent, element);
+	setChild(parent, element, nullptr);
+	delete element;
+	balanceInCaseOfRemove(set, parent);
+	return true;
+}
+
+bool removeByNode(Set* set, SetElement* element)
+{
+	SetElement* parent = element->parent;
+
+	if (element->leftChild != nullptr && element->rightChild != nullptr)
+	{
+		SetElement* parentOfNewElement = element;
+		SetElement* newElement = searchOfNewElement(element, parentOfNewElement);
+		const int newKey = newElement->distance;
+		element->vertex = newElement->vertex;
+		remove(set, newElement->distance, newElement->vertex);
 		element->distance = newKey;
 		return true;
 	}
@@ -533,7 +588,7 @@ int height(SetElement* element)
 	return rightHeight + 1;
 }
 
-int nearestVertex(Set* set)
+int findNearestVertexAndRemove(Set* set)
 {
 	if (isEmpty(set))
 	{
@@ -547,5 +602,8 @@ int nearestVertex(Set* set)
 		currentElement = currentElement->leftChild;
 	}
 
-	return currentElement->vertex;
+	int result = currentElement->vertex;
+	removeByNode(set, currentElement);
+
+	return result;
 }

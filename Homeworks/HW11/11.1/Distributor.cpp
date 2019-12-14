@@ -29,7 +29,6 @@ List** distribution(int** adjacencyMatrix, int* capitals, int numberOfTowns, int
 	while (continueDistribution)
 	{
 		continueDistribution = false;
-
 		for (int i = 0; i < numberOfStates; ++i) //Шаг алгоритма для каждой столицы
 		{
 			int lastAddedTown = popFromList(result[i]);
@@ -41,20 +40,17 @@ List** distribution(int** adjacencyMatrix, int* capitals, int numberOfTowns, int
 					add(currentSet, adjacencyMatrix[lastAddedTown - 1][j], j + 1);
 				}
 			}
-			int nearestTown = nearestVertex(currentSet);
-			while (occupied[nearestTown - 1] && !isEmpty(currentSet))
+			int nearestTown = findNearestVertexAndRemove(currentSet);
+			while (occupied[nearestTown - 1] && nearestTown > 0)
 			{
-				remove(currentSet, adjacencyMatrix[lastAddedTown - 1][nearestTown - 1]);
-				nearestTown = nearestVertex(currentSet);
+				nearestTown = findNearestVertexAndRemove(currentSet);
 			}
-			if (isEmpty(setOfAdjacencyVertexes[i]))
+			if (nearestTown > 0)
 			{
-				break;
+				addToList(result[i], nearestTown);
+				occupied[nearestTown - 1] = true;
+				continueDistribution = true;
 			}
-			addToList(result[i], nearestTown);
-			remove(currentSet, adjacencyMatrix[lastAddedTown - 1][nearestTown - 1]);
-			occupied[nearestTown - 1] = true;
-			continueDistribution = true;
 		}
 	}
 
