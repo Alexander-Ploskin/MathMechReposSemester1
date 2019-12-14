@@ -154,12 +154,17 @@
     <ClCompile Include="11.1.cpp" />
     <ClCompile Include="Distributor.cpp" />
     <ClCompile Include="List.cpp" />
+    <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="set.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Distributor.h" />
     <ClInclude Include="List.h" />
+    <ClInclude Include="Matrix.h" />
     <ClInclude Include="set.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="input.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

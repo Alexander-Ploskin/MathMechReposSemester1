@@ -4,7 +4,7 @@
 struct ListElement
 {
 	int value = 0;
-	ListElement* next;
+	ListElement* next = nullptr;
 };
 
 struct List
@@ -30,16 +30,22 @@ void deleteList(List* list)
 		delete list->head;
 		list->head = help;
 	}
+
+	delete list;
 }
 
-void add(List* list, int value)
+void addToList(List* list, int value)
+{
+	list->head = new ListElement{ value, list->head };
+}
+
+int popFromList(List* list)
 {
 	if (isEmpty(list))
 	{
-		list->head = new ListElement{ value };
-		return;
+		return -1;
 	}
-	list->head = new ListElement{ value, list->head };
+	return list->head->value;
 }
 
 void printList(List* list)
@@ -49,9 +55,12 @@ void printList(List* list)
 		return;
 	}
 	ListElement* currentElement = list->head;
-	while (currentElement->next != nullptr)
+
+	while (currentElement != nullptr)
 	{
 		printf("%d ", currentElement->value);
 		currentElement = currentElement->next;
 	}
+
+	printf("\n");
 }

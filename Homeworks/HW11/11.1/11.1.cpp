@@ -1,26 +1,7 @@
 ﻿#include <stdio.h>
-
-void printMatrix(int** matrix, int size)
-{
-	for (int i = 0; i < size; ++i)
-	{
-		for (int j = 0; j < size; ++j)
-		{
-			printf("%d ", matrix[i][j]);
-		}
-		printf("\n");
-	}
-}
-
-int** createMatrix(int size)
-{
-	int** matrix = new int* [size] {};
-	for (int i = 0; i < size; ++i)
-	{
-		matrix[i] = new int[size] {};
-	}
-	return matrix;
-}
+#include "Matrix.h"
+#include "List.h"
+#include "Distributor.h"
 
 int main()
 {
@@ -32,7 +13,7 @@ int main()
 	fscanf(filePtr, "%d", &numberOfTowns);
 	fscanf(filePtr, "%d", &numberOfRoads);
 
-	int** adjacencyMatrix = createMatrix(numberOfTowns);
+	int** adjacencyMatrix = createMatrix(numberOfTowns); //Матрица смежности для данного графа
 	
 	for (int i = 0; i < numberOfRoads; ++i)
 	{
@@ -50,7 +31,7 @@ int main()
 
 	int numberOfStates = 0;
 	fscanf(filePtr, "%d", &numberOfStates);
-	int* capitals = new int[numberOfStates] {};
+	int* capitals = new int[numberOfStates] {}; //Массив столиц
 	for (int i = 0; i < numberOfStates; ++i)
 	{
 		fscanf(filePtr, "%d", &capitals[i]);
@@ -58,25 +39,16 @@ int main()
 
 	fclose(filePtr);
 
+	List** resultOfDistribution = distribution(adjacencyMatrix, capitals, numberOfTowns, numberOfStates);
+
+	for (int i = 0; i < numberOfStates; ++i)
+	{
+		printf("State %d ocupies towns:", capitals[i]);
+		printList(resultOfDistribution[i]);
+	}
+
+	deleteListOfLists(resultOfDistribution, numberOfStates);
+	deleteMatrix(adjacencyMatrix, numberOfTowns);
+
 	return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
