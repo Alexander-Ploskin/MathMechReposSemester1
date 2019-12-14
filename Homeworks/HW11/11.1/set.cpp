@@ -26,21 +26,29 @@ Set* createSet()
 	return new Set;
 }
 
-SetElement* searchElement(Set* set, int key, SetElement*& parent)
+SetElement* searchElement(Set* set, int distance, int vertex, SetElement*& parent)
 {
 	SetElement* currentElement = set->root;
-	if (currentElement->distance == key)
+	if (currentElement->distance == distance && currentElement->vertex == vertex)
 	{
 		return currentElement;
 	}
 	while (currentElement != nullptr)
 	{
-		if (currentElement->distance == key)
+		if (currentElement->distance == distance)
 		{
-			parent = currentElement->parent;
-			return currentElement;
+			if (currentElement->vertex == vertex)
+			{
+				parent = currentElement->parent;
+				return currentElement;
+			}
+			if (currentElement->leftChild->distance == distance)
+			{
+				currentElement = currentElement->leftChild;
+			}
+			currentElement = currentElement->rightChild;
 		}
-		else if (currentElement->distance < key)
+		else if (currentElement->distance < distance)
 		{
 			currentElement = currentElement->rightChild;
 		}
@@ -50,15 +58,6 @@ SetElement* searchElement(Set* set, int key, SetElement*& parent)
 		}
 	}
 	return nullptr;
-}
-
-bool contains(Set* set, int key)
-{
-	if (isEmpty(set))
-	{
-		return false;
-	}
-	return searchElement(set, key, set->root) != nullptr;
 }
 
 void setChild(SetElement* parent, SetElement* currentChild, SetElement* newChild)
@@ -431,21 +430,31 @@ void updateParentBalance(SetElement* parent, SetElement* child)
 	}
 }
 
-bool remove(Set* set, int distance)
+bool contains(Set* set, int distance, int vertex)
 {
-	if (isEmpty(set) || !contains(set, distance))
+	if (isEmpty(set))
+	{
+		return false;
+	}
+	SetElement* unneededParent = set->root;
+	return searchElement(set, distance, vertex, unneededParent) != nullptr;
+}
+
+bool remove(Set* set, int distance, int vertex)
+{
+	if (isEmpty(set) || !contains(set, distance, vertex))
 	{
 		return false;
 	}
 	SetElement* parent = nullptr;
-	SetElement* element = searchElement(set, distance, parent);
+	SetElement* element = searchElement(set, distance, vertex, parent);
 	if (element->leftChild != nullptr && element->rightChild != nullptr)
 	{
 		SetElement* parentOfNewElement = element;
 		SetElement* newElement = searchOfNewElement(element, parentOfNewElement);
 		const int newKey = newElement->distance;
 		element->vertex = newElement->vertex;
-		remove(set, newElement->distance);
+		remove(set, newElement->distance, vertex);
 		element->distance = newKey;
 		return true;
 	}
