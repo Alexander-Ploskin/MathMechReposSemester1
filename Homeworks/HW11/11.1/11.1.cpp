@@ -3,18 +3,12 @@
 #include "List.h"
 #include "Distributor.h"
 
-int main()
+void readInputFromFile(int**& adjacencyMatrix, int*& capitals, int& numberOfTowns, int& numberOfStates, FILE* filePtr)
 {
-	int numberOfTowns = 0;
 	int numberOfRoads = 0;
-
-	FILE* filePtr = fopen("input.txt", "r");
-
 	fscanf(filePtr, "%d", &numberOfTowns);
 	fscanf(filePtr, "%d", &numberOfRoads);
-
-	int** adjacencyMatrix = createMatrix(numberOfTowns); //Матрица смежности для данного графа
-	
+	adjacencyMatrix = createMatrix(numberOfTowns);
 	for (int i = 0; i < numberOfRoads; ++i)
 	{
 		int town1 = 0;
@@ -29,21 +23,40 @@ int main()
 		adjacencyMatrix[town2 - 1][town1 - 1] = distance;
 	}
 
-	int numberOfStates = 0;
+	numberOfStates = 0;
 	fscanf(filePtr, "%d", &numberOfStates);
-	int* capitals = new int[numberOfStates] {}; //Массив столиц
+	capitals = new int[numberOfStates] {}; //Массив столиц
 	for (int i = 0; i < numberOfStates; ++i)
 	{
 		fscanf(filePtr, "%d", &capitals[i]);
 	}
+}
 
+bool test()
+{
+	return true;
+}
+
+int main()
+{
+	if (!test())
+	{
+		return 1;
+	}
+
+	FILE* filePtr = fopen("input.txt", "r");
+	int numberOfTowns = 0;
+	int numberOfStates = 0;
+	int* capitals = nullptr;
+	int** adjacencyMatrix = nullptr;
+	readInputFromFile(adjacencyMatrix, capitals, numberOfTowns, numberOfStates, filePtr);
 	fclose(filePtr);
 
 	List** resultOfDistribution = distribution(adjacencyMatrix, capitals, numberOfTowns, numberOfStates);
 
 	for (int i = 0; i < numberOfStates; ++i)
 	{
-		printf("State %d ocupies towns:", capitals[i]);
+		printf("State %d ocupies towns: ", capitals[i]);
 		printList(resultOfDistribution[i]);
 	}
 

@@ -64,3 +64,42 @@ void printList(List* list)
 
 	printf("\n");
 }
+
+bool listcmp(List* list1, List* list2)
+{
+	ListElement* currentElement1 = list1->head;
+	ListElement* currentElement2 = list2->head;
+
+	while (currentElement1 != nullptr)
+	{
+		if (currentElement2 == nullptr)
+		{
+			return false;
+		}
+		if (currentElement1->value != currentElement2->value)
+		{
+			return false;
+		}
+		currentElement1 = currentElement1->next;
+		currentElement2 = currentElement2->next;
+	}
+
+	if (currentElement2 != nullptr)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+List* createListByArray(int* array, int arraySize)
+{
+	List* result = createList();
+
+	for (int i = 0; i < arraySize; ++i)
+	{
+		addToList(result, array[i]);
+	}
+
+	return result;
+}

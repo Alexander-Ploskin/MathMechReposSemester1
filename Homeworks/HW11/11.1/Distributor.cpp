@@ -1,8 +1,19 @@
 #include <stdio.h>
 #include "Distributor.h"
 #include "List.h"
-#include "set.h"
 #include "Matrix.h"
+#include "ListOfVertexes.h"
+
+void updateListOfAdjacentVertexes(int** adjacencyMatrix, bool* occupied, ListOfVertexes* list, int newVertex, int numberOfTowns)
+{
+	for (int j = 0; j < numberOfTowns; ++j) //Обновление множества смежных вершин
+	{
+		if (adjacencyMatrix[newVertex - 1][j] > 0 && !occupied[j])
+		{
+			addVertex(list, adjacencyMatrix[newVertex - 1][j], j + 1);
+		}
+	}
+}
 
 List** distribution(int** adjacencyMatrix, int* capitals, int numberOfTowns, int numberOfStates)
 {
@@ -18,11 +29,7 @@ List** distribution(int** adjacencyMatrix, int* capitals, int numberOfTowns, int
 		addToList(result[i], capitals[i]);
 	}
 
-	Set** setOfAdjacencyVertexes = new Set * [numberOfStates] {};
-	for (int i = 0; i < numberOfStates; ++i)
-	{
-		setOfAdjacencyVertexes[i] = createSet();
-	}
+	ListOfVertexes** listOfAdjacentVertexes = createArrayOfLists(numberOfStates);//Список смежных вершин для каждой столицы
 
 	bool continueDistribution = true;
 
@@ -32,18 +39,14 @@ List** distribution(int** adjacencyMatrix, int* capitals, int numberOfTowns, int
 		for (int i = 0; i < numberOfStates; ++i) //Шаг алгоритма для каждой столицы
 		{
 			int lastAddedTown = popFromList(result[i]);
-			Set* currentSet = setOfAdjacencyVertexes[i];
-			for (int j = 0; j < numberOfTowns; ++j) //Обновление множества смежных вершин
-			{
-				if (adjacencyMatrix[lastAddedTown - 1][j] > 0 && !occupied[j])
-				{
-					add(currentSet, adjacencyMatrix[lastAddedTown - 1][j], j + 1);
-				}
-			}
-			int nearestTown = findNearestVertexAndRemove(currentSet);
+			ListOfVertexes* currentList = listOfAdjacentVertexes[i];
+			updateListOfAdjacentVertexes(adjacencyMatrix, occupied, currentList, lastAddedTown, numberOfTowns);
+			int nearestTown = nearestVertex(currentList);
+			removeVertex(currentList, nearestTown);
 			while (occupied[nearestTown - 1] && nearestTown > 0)
 			{
-				nearestTown = findNearestVertexAndRemove(currentSet);
+				nearestTown = nearestVertex(currentList);
+				removeVertex(currentList, nearestTown);
 			}
 			if (nearestTown > 0)
 			{
@@ -55,10 +58,6 @@ List** distribution(int** adjacencyMatrix, int* capitals, int numberOfTowns, int
 	}
 
 	delete[] occupied;
-	for (int i = 0; i < numberOfStates; ++i)
-	{
-		deleteSet(setOfAdjacencyVertexes[i]);
-	}
-	delete setOfAdjacencyVertexes;
+	deleteArrayOfLists(listOfAdjacentVertexes, numberOfStates);
 	return result;
 }

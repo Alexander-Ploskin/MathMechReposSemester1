@@ -20,3 +20,9 @@ void printList(List* list);
 
 //Удаляет список
 void deleteList(List* list);
+
+//Сравнивает два списка
+bool listcmp(List* list1, List* list2);
+
+//Создает список по массиву
+List* createListByArray(int* array, int arraySize);
