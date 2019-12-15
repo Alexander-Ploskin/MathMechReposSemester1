@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include "Distributor.h"
 #include "List.h"
-#include "Matrix.h"
 #include "ListOfVertexes.h"
 
 void updateListOfAdjacentVertexes(int** adjacencyMatrix, bool* occupied, ListOfVertexes* list, int newVertex, int numberOfTowns)
@@ -23,13 +22,13 @@ List** distribution(int** adjacencyMatrix, int* capitals, int numberOfTowns, int
 		occupied[capitals[i] - 1] = true;
 	}
 
-	List** result = createListOfLists(numberOfStates); //Результат распределения
+	List** result = createArrayOfLists(numberOfStates); //Результат распределения
 	for (int i = 0; i < numberOfStates; ++i)
 	{
 		addToList(result[i], capitals[i]);
 	}
 
-	ListOfVertexes** listOfAdjacentVertexes = createArrayOfLists(numberOfStates);//Список смежных вершин для каждой столицы
+	ListOfVertexes** listOfAdjacentVertexes = createArrayOfListsOfVertexes(numberOfStates);//Список смежных вершин для каждой столицы
 
 	bool continueDistribution = true;
 
@@ -58,6 +57,6 @@ List** distribution(int** adjacencyMatrix, int* capitals, int numberOfTowns, int
 	}
 
 	delete[] occupied;
-	deleteArrayOfLists(listOfAdjacentVertexes, numberOfStates);
+	deleteArrayOfListsOfVertexes(listOfAdjacentVertexes, numberOfStates);
 	return result;
 }

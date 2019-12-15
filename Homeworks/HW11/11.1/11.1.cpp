@@ -32,8 +32,43 @@ void readInputFromFile(int**& adjacencyMatrix, int*& capitals, int& numberOfTown
 	}
 }
 
+List** createDistribution(FILE* filePtr)
+{
+	int numberOfTowns = 0;
+	int numberOfStates = 0;
+	int* capitals = nullptr;
+	int** adjacencyMatrix = nullptr;
+	readInputFromFile(adjacencyMatrix, capitals, numberOfTowns, numberOfStates, filePtr);
+	deleteMatrix(adjacencyMatrix, numberOfTowns);
+	delete[] capitals;
+	return distribution(adjacencyMatrix, capitals, numberOfTowns, numberOfStates);
+}
+
 bool test()
 {
+	FILE* filePtr1 = fopen("test1.txt", "r");
+	FILE* filePtr2 = fopen("test2.txt", "r");
+	FILE* filePtr3 = fopen("test3.txt", "r");
+	FILE* filePtr4 = fopen("test4.txt", "r");
+
+	List** list1 = createDistribution(filePtr1);
+	List** list2 = createDistribution(filePtr2);
+	List** list3 = createDistribution(filePtr3);
+	List** list4 = createDistribution(filePtr4);
+
+	
+
+
+	deleteListOfLists(list1, 2);
+	deleteListOfLists(list2, );
+	deleteListOfLists(list3, );
+	deleteListOfLists(list4, );
+
+	fclose(filePtr1);
+	fclose(filePtr2);
+	fclose(filePtr3);
+	fclose(filePtr4);
+
 	return true;
 }
 
@@ -60,7 +95,7 @@ int main()
 		printList(resultOfDistribution[i]);
 	}
 
-	deleteListOfLists(resultOfDistribution, numberOfStates);
+	deleteArrayOfLists(resultOfDistribution, numberOfStates);
 	deleteMatrix(adjacencyMatrix, numberOfTowns);
 
 	return 0;

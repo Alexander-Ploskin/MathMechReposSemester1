@@ -103,3 +103,51 @@ List* createListByArray(int* array, int arraySize)
 
 	return result;
 }
+
+List** createArrayOfLists(int numberOfLists)
+{
+	List** result = new List * [numberOfLists] {};
+	for (int i = 0; i < numberOfLists; ++i)
+	{
+		result[i] = createList();
+	}
+
+	return result;
+}
+
+void deleteArrayOfLists(List** listOfLists, int numberOfLists)
+{
+	for (int i = 0; i < numberOfLists; ++i)
+	{
+		deleteList(listOfLists[i]);
+	}
+	delete listOfLists;
+}
+
+bool arrayOfListsCmp(List** listOfLists1, List** listOfLists2, int sizeOfArray1, int sizeOfArray2)
+{
+	if (sizeOfArray1 != sizeOfArray2)
+	{
+		return false;
+	}
+	for (int i = 0; i < sizeOfArray1; ++i)
+	{
+		for (int j = 0; j < sizeOfArray2; ++j)
+		{
+			if (!listcmp(listOfLists1[i], listOfLists2[j]))
+			{
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
+List** createListOfListsByArray(int** array, int* sizeOfArrays, int sizeOfSizeOfArrays)
+{
+	for (int i = 0; i < sizeOfSizeOfArrays; ++i)
+	{
+		for (int j = )
+	}
+}

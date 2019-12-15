@@ -114,7 +114,7 @@ int nearestVertex(ListOfVertexes* list)
 	return nearestVertex;
 }
 
-ListOfVertexes** createArrayOfLists(int numberOfLists)
+ListOfVertexes** createArrayOfListsOfVertexes(int numberOfLists)
 {
 	ListOfVertexes** result = new ListOfVertexes * [numberOfLists] {};
 	for (int i = 0; i < numberOfLists; ++i)
@@ -125,7 +125,7 @@ ListOfVertexes** createArrayOfLists(int numberOfLists)
 	return result;
 }
 
-void deleteArrayOfLists(ListOfVertexes** array, int numberOfLists)
+void deleteArrayOfListsOfVertexes(ListOfVertexes** array, int numberOfLists)
 {
 	for (int i = 0; i < numberOfLists; ++i)
 	{
@@ -133,6 +133,3 @@ void deleteArrayOfLists(ListOfVertexes** array, int numberOfLists)
 	}
 	delete[] array;
 }
-
-
-

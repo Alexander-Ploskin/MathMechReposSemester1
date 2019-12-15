@@ -22,7 +22,7 @@ void removeVertex(ListOfVertexes* list, int vertex);
 int nearestVertex(ListOfVertexes* list);
 
 //Создает массив списков
-ListOfVertexes** createArrayOfLists(int numberOfLists);
+ListOfVertexes** createArrayOfListsOfVertexes(int numberOfLists);
 
 //Удаляет массив списков
-void deleteArrayOfLists(ListOfVertexes** array, int numberOfLists);
+void deleteArrayOfListsOfVertexes(ListOfVertexes** array, int numberOfLists);

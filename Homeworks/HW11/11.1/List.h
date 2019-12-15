@@ -26,3 +26,9 @@ bool listcmp(List* list1, List* list2);
 
 //Создает список по массиву
 List* createListByArray(int* array, int arraySize);
+
+//Создает массив списков
+List** createArrayOfLists(int numberOfLists);
+
+//Удаляет массив списков
+void deleteArrayOfLists(List** listOfLists, int numberOfLists);

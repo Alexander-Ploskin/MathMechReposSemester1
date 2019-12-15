@@ -31,23 +31,3 @@ void deleteMatrix(int** matrix, int size)
 	}
 	delete matrix;
 }
-
-List** createListOfLists(int numberOfLists)
-{
-	List** result = new List * [numberOfLists] {};
-	for (int i = 0; i < numberOfLists; ++i)
-	{
-		result[i] = createList();
-	}
-
-	return result;
-}
-
-void deleteListOfLists(List** listOfLists, int numberOfLists)
-{
-	for (int i = 0; i < numberOfLists; ++i)
-	{
-		deleteList(listOfLists[i]);
-	}
-	delete listOfLists;
-}
