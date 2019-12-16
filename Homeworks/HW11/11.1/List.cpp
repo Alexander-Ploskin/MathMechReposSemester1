@@ -65,45 +65,6 @@ void printList(List* list)
 	printf("\n");
 }
 
-bool listcmp(List* list1, List* list2)
-{
-	ListElement* currentElement1 = list1->head;
-	ListElement* currentElement2 = list2->head;
-
-	while (currentElement1 != nullptr)
-	{
-		if (currentElement2 == nullptr)
-		{
-			return false;
-		}
-		if (currentElement1->value != currentElement2->value)
-		{
-			return false;
-		}
-		currentElement1 = currentElement1->next;
-		currentElement2 = currentElement2->next;
-	}
-
-	if (currentElement2 != nullptr)
-	{
-		return false;
-	}
-
-	return true;
-}
-
-List* createListByArray(int* array, int arraySize)
-{
-	List* result = createList();
-
-	for (int i = 0; i < arraySize; ++i)
-	{
-		addToList(result, array[i]);
-	}
-
-	return result;
-}
-
 List** createArrayOfLists(int numberOfLists)
 {
 	List** result = new List * [numberOfLists] {};
@@ -115,16 +76,69 @@ List** createArrayOfLists(int numberOfLists)
 	return result;
 }
 
-void deleteArrayOfLists(List** listOfLists, int numberOfLists)
+void deleteArrayOfLists(List** arrayOfLists, int numberOfLists)
 {
 	for (int i = 0; i < numberOfLists; ++i)
 	{
-		deleteList(listOfLists[i]);
+		deleteList(arrayOfLists[i]);
 	}
-	delete listOfLists;
+	delete[] arrayOfLists;
 }
 
-bool arrayOfListsCmp(List** listOfLists1, List** listOfLists2, int sizeOfArray1, int sizeOfArray2)
+bool removeFromList(List* list, int value)
+{
+	if (isEmpty(list))
+	{
+		return false;
+	}
+	if (list->head->value == value)
+	{
+		ListElement* help = list->head;
+		list->head = list->head->next;
+		delete help;
+		return true;
+	}
+	ListElement* currentElement = list->head;
+	while (currentElement->next != nullptr)
+	{
+		if (currentElement->next->value == value)
+		{
+			ListElement* help = currentElement->next->next;
+			delete currentElement->next;
+			currentElement->next = help;
+			return true;
+		}
+		currentElement = currentElement->next;
+	}
+
+	return false;
+}
+
+List* createListByArray(int* array, int sizeOfArray)
+{
+	List* result = createList();
+	for (int i = 0; i < sizeOfArray; ++i)
+	{
+		addToList(result, array[i]);
+	}
+	return result;
+}
+
+bool isEquivalentLists(List* list1, List* list2)
+{
+	ListElement* currentElement = list1->head;
+	while (currentElement != nullptr)
+	{
+		if (!removeFromList(list2, currentElement->value))
+		{
+			return false;
+		}
+		currentElement = currentElement->next;
+	}
+	return true;
+}
+
+bool arrayOfListscmp(List** array1, List** array2, int sizeOfArray1, int sizeOfArray2)
 {
 	if (sizeOfArray1 != sizeOfArray2)
 	{
@@ -132,22 +146,18 @@ bool arrayOfListsCmp(List** listOfLists1, List** listOfLists2, int sizeOfArray1,
 	}
 	for (int i = 0; i < sizeOfArray1; ++i)
 	{
-		for (int j = 0; j < sizeOfArray2; ++j)
+		if (!isEquivalentLists(array1[i], array2[i]))
 		{
-			if (!listcmp(listOfLists1[i], listOfLists2[j]))
-			{
-				return false;
-			}
+			return false;
 		}
 	}
-
 	return true;
 }
 
-List** createListOfListsByArray(int** array, int* sizeOfArrays, int sizeOfSizeOfArrays)
+void deleteListsOfTheArray(List** arrayOfLists, int numberOfLists)
 {
-	for (int i = 0; i < sizeOfSizeOfArrays; ++i)
+	for (int i = 0; i < numberOfLists; ++i)
 	{
-		for (int j = )
+		deleteList(arrayOfLists[i]);
 	}
 }

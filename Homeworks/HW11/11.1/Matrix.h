@@ -9,9 +9,3 @@ int** createMatrix(int size);
 
 //Удаляет матрицу
 void deleteMatrix(int** matrix, int size);
-
-//Создает список списков
-List** createListOfLists(int numberOfLists);
-
-//Удаляет список списков
-void deleteListOfLists(List** listOfLists, int numberOfLists);
