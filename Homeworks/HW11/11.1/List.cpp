@@ -138,7 +138,7 @@ bool isEquivalentLists(List* list1, List* list2)
 	return true;
 }
 
-bool arrayOfListscmp(List** array1, List** array2, int sizeOfArray1, int sizeOfArray2)
+bool arrayOfListsCmp(List** array1, List** array2, int sizeOfArray1, int sizeOfArray2)
 {
 	if (sizeOfArray1 != sizeOfArray2)
 	{

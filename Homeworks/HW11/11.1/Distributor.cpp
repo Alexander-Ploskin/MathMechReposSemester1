@@ -7,7 +7,7 @@ void updateListOfAdjacentVertexes(int** adjacencyMatrix, bool* occupied, ListOfV
 {
 	for (int j = 0; j < numberOfTowns; ++j) //Обновление множества смежных вершин
 	{
-		if (adjacencyMatrix[newVertex - 1][j] > 0 && !occupied[j])
+		if (adjacencyMatrix[newVertex - 1][j] > 0 && !occupied[j + 1])
 		{
 			addVertex(list, adjacencyMatrix[newVertex - 1][j], j + 1);
 		}
@@ -16,10 +16,10 @@ void updateListOfAdjacentVertexes(int** adjacencyMatrix, bool* occupied, ListOfV
 
 List** distribution(int** adjacencyMatrix, int* capitals, int numberOfTowns, int numberOfStates)
 {
-	bool* occupied = new bool[numberOfTowns] {}; //Битовая маска оккупированных городов
+	bool* occupied = new bool[numberOfTowns + 1] {}; //Битовая маска оккупированных городов
 	for (int i = 0; i < numberOfStates; ++i)
 	{
-		occupied[capitals[i] - 1] = true;
+		occupied[capitals[i]] = true;
 	}
 
 	List** result = createArrayOfLists(numberOfStates); //Результат распределения
@@ -42,7 +42,7 @@ List** distribution(int** adjacencyMatrix, int* capitals, int numberOfTowns, int
 			updateListOfAdjacentVertexes(adjacencyMatrix, occupied, currentList, lastAddedTown, numberOfTowns);
 			int nearestTown = nearestVertex(currentList);
 			removeVertex(currentList, nearestTown);
-			while (occupied[nearestTown - 1] && nearestTown > 0)
+			while (occupied[nearestTown] && nearestTown > 0)
 			{
 				nearestTown = nearestVertex(currentList);
 				removeVertex(currentList, nearestTown);
@@ -50,7 +50,7 @@ List** distribution(int** adjacencyMatrix, int* capitals, int numberOfTowns, int
 			if (nearestTown > 0)
 			{
 				addToList(result[i], nearestTown);
-				occupied[nearestTown - 1] = true;
+				occupied[nearestTown] = true;
 				continueDistribution = true;
 			}
 		}

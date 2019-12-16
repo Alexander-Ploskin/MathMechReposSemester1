@@ -37,7 +37,7 @@ bool isEmpty(List* list);
 List* createListByArray(int* array, int sizeOfArray);
 
 //Сравнивает два массива списков
-bool arrayOfListscmp(List** array1, List** array2, int sizeOfArray1, int sizeOfArray2);
+bool arrayOfListsCmp(List** array1, List** array2, int sizeOfArray1, int sizeOfArray2);
 
 //Удаляет все списки в массиве списков
 void deleteListsOfTheArray(List** arrayOfLists, int numberOfLists);

@@ -1,5 +1,5 @@
-#include "List.h"
 #pragma once
+#include "List.h"
 
 //Печатает матрицу 
 void printMatrix(int** matrix, int size);
