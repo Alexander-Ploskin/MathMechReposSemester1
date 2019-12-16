@@ -125,6 +125,7 @@ int main()
 
 	deleteArrayOfLists(resultOfDistribution, numberOfStates);
 	deleteMatrix(adjacencyMatrix, numberOfTowns);
+	delete[] capitals;
 
 	return 0;
 }
