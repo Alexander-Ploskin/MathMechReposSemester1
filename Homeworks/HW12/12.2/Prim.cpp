@@ -51,6 +51,5 @@ int** createMinimumSpanningTree(int** adjacencyMatrix, int size)
 
 	delete[] used;
 	deleteQueue(adjacentVertexes);
-
 	return newAdjacencyMatrix;
 }

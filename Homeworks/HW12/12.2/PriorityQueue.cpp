@@ -24,6 +24,7 @@ void deleteQueue(PriorityQueue* queue)
 	{
 		delete queue->array[i];
 	}
+	delete[] queue->array;
 }
 
 bool isEmptyQueue(PriorityQueue* queue)
@@ -82,6 +83,7 @@ int extractMin(PriorityQueue* queue, int& bufferOfAdditionalValue)
 {
 	int result = queue->array[0]->value;
 	bufferOfAdditionalValue = queue->array[0]->additionalValue;
+	delete queue->array[0];
 	queue->array[0] = queue->array[queue->sizeOfQueue - 1];
 	queue->sizeOfQueue--;
 	shiftDown(queue, 0);
