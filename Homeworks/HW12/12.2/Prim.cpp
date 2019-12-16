@@ -1,6 +1,6 @@
 #include "Prim.h"
 #include "Matrix.h"
-#include "ListOfVertexes.h"
+#include "PriorityQueue.h"
 
 int** createMinimumSpanningTree(int** adjacencyMatrix, int size)
 {
@@ -12,7 +12,7 @@ int** createMinimumSpanningTree(int** adjacencyMatrix, int size)
 	int** newAdjacencyMatrix = createMatrix(size);
 	bool* used = new bool[size] {};
 	int numberOfUsedVertexes = 1;
-	ListOfVertexes* listOfAdjacentVertexes = createListOfVertexes();
+	PriorityQueue* adjacentVertexes = createQueue();
 	int lastAddedVertex = 0;
 
 	while (numberOfUsedVertexes <= size)
@@ -21,7 +21,7 @@ int** createMinimumSpanningTree(int** adjacencyMatrix, int size)
 		{
 			if (adjacencyMatrix[lastAddedVertex][i] > 0)
 			{
-				addVertex(listOfAdjacentVertexes, adjacencyMatrix[lastAddedVertex][i], i, lastAddedVertex);
+				addToQueue(adjacentVertexes, i, adjacencyMatrix[lastAddedVertex][i], lastAddedVertex);
 			}
 		}
 
@@ -29,14 +29,13 @@ int** createMinimumSpanningTree(int** adjacencyMatrix, int size)
 		int adjacentVertex = 0;
 		while (true)
 		{
-			if (isEmpty(listOfAdjacentVertexes))
+			if (isEmptyQueue(adjacentVertexes))
 			{
 				delete[] used;
-				deleteListOfVertexes(listOfAdjacentVertexes);
+				deleteQueue(adjacentVertexes);
 				return newAdjacencyMatrix;
 			}
-			newVertex = nearestVertex(listOfAdjacentVertexes, adjacentVertex);
-			removeVertex(listOfAdjacentVertexes, newVertex);
+			newVertex = extractMin(adjacentVertexes, adjacentVertex);
 			if (!used[newVertex])
 			{
 				break;
@@ -51,7 +50,7 @@ int** createMinimumSpanningTree(int** adjacencyMatrix, int size)
 	}
 
 	delete[] used;
-	deleteListOfVertexes(listOfAdjacentVertexes);
+	deleteQueue(adjacentVertexes);
 
 	return newAdjacencyMatrix;
 }
