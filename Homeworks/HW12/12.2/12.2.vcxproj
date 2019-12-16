@@ -152,11 +152,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="12.2.cpp" />
+    <ClCompile Include="heap.cpp" />
     <ClCompile Include="ListOfVertexes.cpp" />
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="Prim.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="heap.h" />
     <ClInclude Include="ListOfVertexes.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Prim.h" />

@@ -2,7 +2,7 @@
 #include "Matrix.h"
 #include "ListOfVertexes.h"
 
-int** createMinimumSpenningTree(int** adjacencyMatrix, int size)
+int** createMinimumSpanningTree(int** adjacencyMatrix, int size)
 {
 	if (size == 0)
 	{
