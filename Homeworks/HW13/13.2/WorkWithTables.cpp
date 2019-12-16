@@ -47,10 +47,6 @@ void readTableFromFile(FILE* filePtr, int** table, int lengthOfStrings, int leng
 		while (k < lengthOfStrings)
 		{
 			fscanf(filePtr, "%d", &buffer);
-			if (buffer == 32)
-			{
-				continue;
-			}
 			table[k][j] = buffer;
 			k++;
 		}
