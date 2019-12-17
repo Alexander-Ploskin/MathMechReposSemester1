@@ -48,4 +48,6 @@ int main()
 	}
 	fclose(filePtr);
 	deleteList(list);
+
+	return 0;
 }

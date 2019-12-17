@@ -59,6 +59,7 @@ void deleteList(List* list)
 		delete list->head;
 		list->head = help;
 	}
+	delete list;
 	return;
 }
 
