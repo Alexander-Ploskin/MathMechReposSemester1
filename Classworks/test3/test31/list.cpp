@@ -48,7 +48,7 @@ void printList(List* list)
 	ListElement* currentElement = list->head;
 	if (isEmpty(list))
 	{
-		printf("Пустой список\n");
+		printf("\n");
 	}
 	while (currentElement != nullptr)
 	{
