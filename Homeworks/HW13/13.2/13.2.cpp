@@ -4,18 +4,21 @@
 
 const int maxLength = 10000;
 
-bool stringCompare(char* string1, char* string2)
+void deleteTrash(char* string)
 {
-	const int lengthOfString1 = strlen(string1);
-
-	for (int i = 0; i < lengthOfString1; ++i)
+	int i = 0;
+	while (i < maxLength)
 	{
-		if (string1[i] != string2[i])
+		if (string[i] == '\0')
 		{
-			return false;
+			return;
 		}
+		if (string[i] == ' ' || string[i] == '\n')
+		{
+			string[i] = '\0';
+		}
+		i++;
 	}
-	return true;
 }
 
 char* highlightComments(FILE* filePtr, int** fsmTable, char* header, int sizeOfHeader)
@@ -52,20 +55,20 @@ bool test(int** fsmTable, char* header, int lengthOfStrings)
 	FILE* filePtr1 = fopen("test1.txt", "r");
 	char* buffer1 = highlightComments(filePtr1, fsmTable, header, lengthOfStrings);
 	fclose(filePtr1);
-	char comments1[] = {'/','*','c','o','m','m','e','n','t','*','/' ,'\0' };
-	bool test1 = stringCompare(buffer1, comments1);
+	deleteTrash(buffer1);
+	bool test1 = strcmp(buffer1, "/*comment*/") == 0;
 	
 	FILE* filePtr2 = fopen("test2.txt", "r");
 	char* buffer2 = highlightComments(filePtr2, fsmTable, header, lengthOfStrings);
 	fclose(filePtr2);
-	char comments2[] = "/**/";
-	bool test2 = strcmp(buffer2, comments2) == 0;
+	deleteTrash(buffer2);
+	bool test2 = strcmp(buffer2, "/**/") == 0;
 
 	FILE* filePtr3 = fopen("test3.txt", "r");
 	char* buffer3 = highlightComments(filePtr3, fsmTable, header, lengthOfStrings);
 	fclose(filePtr3);
-	char comments3[] = "";
-	bool test3 = strcmp(buffer3, comments3) == 0;
+	deleteTrash(buffer3);
+	bool test3 = strcmp(buffer3, "/*/*/") == 0;
 
 	return test1 && test2 && test3;
 }
