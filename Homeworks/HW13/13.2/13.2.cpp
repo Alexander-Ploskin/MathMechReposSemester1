@@ -7,17 +7,15 @@ const int maxLength = 10000;
 void deleteTrash(char* string)
 {
 	int i = 0;
-	while (i < maxLength)
+	while (string[i] != '\0')
 	{
-		if (string[i] == '\0')
-		{
-			return;
-		}
-		if (string[i] == ' ' || string[i] == '\n')
-		{
-			string[i] = '\0';
-		}
 		i++;
+	}
+	i--;
+	while (string[i] == ' ' || string[i] == '\n')
+	{
+		string[i] = '\0';
+		i--;
 	}
 }
 
@@ -32,8 +30,8 @@ char* highlightComments(FILE* filePtr, int** fsmTable, char* header, int sizeOfH
 		int indexOfSymbol = index(header, sizeOfHeader, symbol);
 		if (currentState == 3 && fsmTable[indexOfSymbol][currentState] == 0)
 		{
-			strcat(bufferString, "*/ ");
-			i += 3;
+			bufferString[i] = '/';
+			i++;
 		}
 		if (currentState == 1 && fsmTable[indexOfSymbol][currentState] == 2)
 		{
@@ -41,7 +39,7 @@ char* highlightComments(FILE* filePtr, int** fsmTable, char* header, int sizeOfH
 			i++;
 		}
 		currentState = fsmTable[indexOfSymbol][currentState];
-		if (currentState == 2)
+		if (currentState == 2 || currentState == 3)
 		{
 			bufferString[i] = symbol;
 			i++;
@@ -56,7 +54,7 @@ bool test(int** fsmTable, char* header, int lengthOfStrings)
 	char* buffer1 = highlightComments(filePtr1, fsmTable, header, lengthOfStrings);
 	fclose(filePtr1);
 	deleteTrash(buffer1);
-	bool test1 = strcmp(buffer1, "/*comment*/") == 0;
+	bool test1 = strcmp(buffer1, "/*comment***/") == 0;
 	
 	FILE* filePtr2 = fopen("test2.txt", "r");
 	char* buffer2 = highlightComments(filePtr2, fsmTable, header, lengthOfStrings);
@@ -100,7 +98,7 @@ int main()
 
 	deleteTable(fsmTable, header, lengthOfStrings);
 
-	printf("%s\n", buffer);
+	printf("%s", buffer);
 
 	return 0;
 }
