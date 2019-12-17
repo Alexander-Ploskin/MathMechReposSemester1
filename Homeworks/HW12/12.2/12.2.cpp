@@ -10,7 +10,7 @@ bool test()
 	fscanf(filePtrTest1, "%d", &numberOfVertexes1);
 	int** adjacencyMatrixTest1 = createMatrix(numberOfVertexes1);
 	readMatrixFromFile(adjacencyMatrixTest1, numberOfVertexes1, filePtrTest1);
-	adjacencyMatrixTest1 = createMinimumSpanningTree(adjacencyMatrixTest1, numberOfVertexes1);
+	int** testMinimumSpanningTree = createMinimumSpanningTree(adjacencyMatrixTest1, numberOfVertexes1);
 
 	fscanf(filePtrTrue1, "%d", &numberOfVertexes1);
 	int** adjacencyMatrixTrue1 = createMatrix(numberOfVertexes1);
@@ -19,9 +19,10 @@ bool test()
 	fclose(filePtrTest1);
 	fclose(filePtrTrue1);
 
-	bool test1 = matrixcmp(adjacencyMatrixTest1, adjacencyMatrixTrue1, numberOfVertexes1, numberOfVertexes1);
-	deleteMatrix(adjacencyMatrixTest1, numberOfVertexes1);
+	bool test1 = matrixcmp(testMinimumSpanningTree, adjacencyMatrixTrue1, numberOfVertexes1, numberOfVertexes1);
+	deleteMatrix(testMinimumSpanningTree, numberOfVertexes1);
 	deleteMatrix(adjacencyMatrixTrue1, numberOfVertexes1);
+	deleteMatrix(adjacencyMatrixTest1, numberOfVertexes1);
 
 	return test1;
 }

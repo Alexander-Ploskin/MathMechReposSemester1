@@ -43,7 +43,7 @@ void swap(PriorityQueue* queue, int index1, int index2)
 	queue->array[index2] = temp;
 }
 
-void shiftDown(PriorityQueue* queue, int index)
+void siftDown(PriorityQueue* queue, int index)
 {
 	while (2 * index + 1 < queue->sizeOfQueue)
 	{
@@ -63,7 +63,7 @@ void shiftDown(PriorityQueue* queue, int index)
 	}
 }
 
-void shiftUp(PriorityQueue* queue, int index)
+void siftUp(PriorityQueue* queue, int index)
 {
 	while (queue->array[index]->key < queue->array[(index - 1) / 2]->key)
 	{
@@ -76,7 +76,7 @@ void addToQueue(PriorityQueue* queue, int value, int key, int additionalValue)
 {
 	queue->sizeOfQueue++;
 	queue->array[queue->sizeOfQueue - 1] = new QueueElement{ value, key, additionalValue };
-	shiftUp(queue, queue->sizeOfQueue - 1);
+	siftUp(queue, queue->sizeOfQueue - 1);
 }
 
 int extractMin(PriorityQueue* queue, int& bufferOfAdditionalValue)
@@ -86,6 +86,6 @@ int extractMin(PriorityQueue* queue, int& bufferOfAdditionalValue)
 	delete queue->array[0];
 	queue->array[0] = queue->array[queue->sizeOfQueue - 1];
 	queue->sizeOfQueue--;
-	shiftDown(queue, 0);
+	siftDown(queue, 0);
 	return result;
 }
