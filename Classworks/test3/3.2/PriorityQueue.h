@@ -1,8 +1,5 @@
 #pragma once
 
-//Максимальное число элементов в куче
-const int maxNumberOfElements = 1000;
-
 //Тип данных очередь с приоритетами
 struct PriorityQueue;
 

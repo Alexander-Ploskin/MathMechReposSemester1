@@ -11,8 +11,12 @@ int main()
 	enqueue(queue, 10, 10);
 	enqueue(queue, 15, 0);
 
-
-	printf("%d", dequeue(queue));
+	printf("%d\n", dequeue(queue));
+	printf("%d\n", dequeue(queue));
+	printf("%d\n", dequeue(queue));
+	printf("%d\n", dequeue(queue));
+	printf("%d\n", dequeue(queue));
+	printf("%d\n", dequeue(queue));
 
 	deleteQueue(queue);
 

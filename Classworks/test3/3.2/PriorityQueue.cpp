@@ -1,5 +1,7 @@
 #include "PriorityQueue.h"
 
+const int initialSizeOfQueue = 2;
+
 struct QueueElement
 {
 	int value = 0;
@@ -8,8 +10,9 @@ struct QueueElement
 
 struct PriorityQueue
 {
-	QueueElement* array[maxNumberOfElements]{};
-	int sizeOfQueue = 0;
+	QueueElement** array = new QueueElement* [initialSizeOfQueue]{};
+	int numberOfElements = 0;
+	int sizeOfQueue = initialSizeOfQueue;
 };
 
 PriorityQueue* createQueue()
@@ -19,16 +22,17 @@ PriorityQueue* createQueue()
 
 void deleteQueue(PriorityQueue* queue)
 {
-	for (int i = 0; i < queue->sizeOfQueue; ++i)
+	for (int i = 0; i < queue->numberOfElements; ++i)
 	{
 		delete queue->array[i];
 	}
 	delete[] queue->array;
+	delete queue;
 }
 
 bool isEmptyQueue(PriorityQueue* queue)
 {
-	return queue->sizeOfQueue == 0;
+	return queue->numberOfElements == 0;
 }
 
 void swap(PriorityQueue* queue, int index1, int index2)
@@ -44,16 +48,16 @@ void swap(PriorityQueue* queue, int index1, int index2)
 
 void siftDown(PriorityQueue* queue, int index)
 {
-	while (2 * index + 1 < queue->sizeOfQueue)
+	while (2 * index + 1 < queue->numberOfElements)
 	{
 		int indexOfRightChild = 2 * index + 1;
 		int indexOfLeftChild = 2 * index + 2;
 		int j = indexOfLeftChild;
-		if (indexOfRightChild < queue->sizeOfQueue && queue->array[indexOfRightChild]->key <= queue->array[indexOfLeftChild]->key)
+		if (indexOfRightChild < queue->numberOfElements && queue->array[indexOfRightChild]->key >= queue->array[indexOfLeftChild]->key)
 		{
 			j = indexOfRightChild;
 		}
-		if (queue->array[index]->key <= queue->array[j]->key)
+		if (queue->array[index]->key >= queue->array[j]->key)
 		{
 			break;
 		}
@@ -71,11 +75,27 @@ void siftUp(PriorityQueue* queue, int index)
 	}
 }
 
+void resize(PriorityQueue* queue)
+{
+	QueueElement** newArray = new QueueElement * [queue->sizeOfQueue * 2];
+	for (int i = 0; i < queue->numberOfElements; ++i)
+	{
+		newArray[i] = queue->array[i];
+	}
+	queue->sizeOfQueue *= 2;
+	delete[] queue->array;
+	queue->array = newArray;
+}
+
 void enqueue(PriorityQueue* queue, int value, int key)
 {
-	queue->sizeOfQueue++;
-	queue->array[queue->sizeOfQueue - 1] = new QueueElement{ value, key};
-	siftUp(queue, queue->sizeOfQueue - 1);
+	queue->numberOfElements++;
+	queue->array[queue->numberOfElements - 1] = new QueueElement{ value, key };
+	siftUp(queue, queue->numberOfElements - 1);
+	if (queue->numberOfElements / queue->sizeOfQueue >= 0.9)
+	{
+		resize(queue);
+	}
 }
 
 int dequeue(PriorityQueue* queue)
@@ -86,8 +106,8 @@ int dequeue(PriorityQueue* queue)
 	}
 	int result = queue->array[0]->value;
 	delete queue->array[0];
-	queue->array[0] = queue->array[queue->sizeOfQueue - 1];
-	queue->sizeOfQueue--;
+	queue->array[0] = queue->array[queue->numberOfElements - 1];
+	queue->numberOfElements--;
 	siftDown(queue, 0);
 	return result;
 }
