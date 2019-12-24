@@ -1,6 +1,9 @@
 acc
 acc
-bght fff
 bght ccc
+bght ccc
+bght fff
+z
+zzzzz
 acc
-zzz
+bghtccc
