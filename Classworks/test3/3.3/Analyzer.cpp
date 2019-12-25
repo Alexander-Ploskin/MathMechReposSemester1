@@ -112,15 +112,7 @@ bool isNumberOfGroup(char* string)
 		}
 		case 7:
 		{
-			if (currentToken == 'm')
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-			break;
+			return currentToken == 'm';
 		}
 		}
 	}
