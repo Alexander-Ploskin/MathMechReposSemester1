@@ -29,7 +29,7 @@ int main()
 		return 1;
 	}
 
-	printf("Enter the string shorter the 10 symbols:\n");
+	printf("Enter the string shorter than 10 symbols:\n");
 
 	char buffer[maxLength]{};
 	scanf("%s", &buffer);
