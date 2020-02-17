@@ -2,61 +2,33 @@
 #include <stdio.h>
 #include "Parser.h"
 
-struct Node
+struct TreeElement
 {
-	const char value = ' ';
-	Node* parent = nullptr;
-	Node* rightChild = nullptr;
-	Node* leftChild = nullptr;
+	const char value;
+	TreeElement* leftChild = nullptr;
+	TreeElement* rightChild = nullptr;
+	TreeElement* parent = nullptr;
 };
 
-struct CountingTree
+struct Parser
 {
-	Node* root = nullptr;
+	TreeElement* root = nullptr;
 };
 
-CountingTree* createTree()
+Parser* createParser()
 {
-	return new CountingTree;
+	return new Parser;
 }
 
-bool isEmpty(CountingTree* tree)
+void deleteParser(Parser* parser)
 {
-	return tree->root == nullptr;
+	delete parser->root;
+	delete parser;
 }
 
-bool isFull(Node* node)
+bool isEmpty(Parser* parser)
 {
-	return node->leftChild != nullptr && node->rightChild != nullptr;
-}
-
-void addNewNode(CountingTree* tree, Node* parent, const char token)
-{
-	if (isEmpty(tree))
-	{
-		tree->root = new Node{ token };
-	}
-	else if (parent->leftChild == nullptr)
-	{
-		parent->leftChild = new Node{ token, parent };
-	}
-	else
-	{
-		parent->rightChild = new Node{ token, parent };
-	}
-}
-
-Node* moveToChild(Node* parent, const char childToken)
-{
-	if (parent->leftChild->value == childToken)
-	{
-		return parent->leftChild;
-	}
-	if (parent->rightChild->value == childToken)
-	{
-		return parent->rightChild;
-	}
-	return parent;
+	return parser->root == nullptr;
 }
 
 bool isOperator(const char token)
@@ -64,128 +36,77 @@ bool isOperator(const char token)
 	return token == '+' || token == '-' || token == '*' || token == '/';
 }
 
-bool isNumber(const char token)
+bool ignoreToken(const char token)
 {
-	return token >= '0' && token <= '9';
+	return token == '(' || token == ' ' || token == ')';
 }
 
-void buildTree(CountingTree* tree, char* string)
+TreeElement* add(TreeElement* currentElement, const char token)
 {
-	const int length = strlen(string);
-	Node* currentNode = nullptr;
-
-	int i = 0;
-	while (!isOperator(string[i]))
+	if (ignoreToken(token))
 	{
-		if (i >= length)
-		{
-			if (isNumber(string[1]))
-			{
-				addNewNode(tree, currentNode, string[1]);
-			}
-			return;
-		}
-		i++;
+		return currentElement;
 	}
-	addNewNode(tree, currentNode, string[i]);
-	i++;
-	currentNode = tree->root;
-
-	while (i < length)
+	if (currentElement->leftChild == nullptr)
 	{
-		const char token = string[i];
-		i++;
-
-		if (!isNumber(token) && !isOperator(token))
-		{
-			continue;
-		}
-
-		addNewNode(tree, currentNode, token);
-
+		currentElement->leftChild = new TreeElement{ token, nullptr, nullptr, currentElement };
 		if (isOperator(token))
 		{
-			currentNode = moveToChild(currentNode, token);
+			return currentElement->leftChild;
 		}
-
-		if (isFull(currentNode))
+	}
+	else if (currentElement->rightChild == nullptr)
+	{
+		currentElement->rightChild = new TreeElement{ token, nullptr, nullptr, currentElement };
+		if (isOperator(token))
 		{
-			currentNode = currentNode->parent;
+			return currentElement->rightChild;
 		}
 	}
+	else
+	{
+		add(currentElement->parent, token);
+	}
 }
 
-int countingSubtree(Node* node)
+void initializationOfTheTree(Parser* parser, char* input)
 {
-	const char token = node->value;
+	parser->root = new TreeElement{ input[0] };
+	TreeElement* currentElement = parser->root;
 
-	if (isNumber(token))
+	const int lengthOfString = strlen(input);
+	for (int i = 1; i < lengthOfString; ++i)
 	{
-		return token - 48;
-	}
-
-	switch (token)
-	{
-	case '+':
-	{
-		return countingSubtree(node->leftChild) + countingSubtree(node->rightChild);
-	}
-	case '*':
-	{
-		return countingSubtree(node->leftChild) * countingSubtree(node->rightChild);
-	}
-	case '-':
-	{
-		return countingSubtree(node->leftChild) - countingSubtree(node->rightChild);
-	}
-	case '/':
-	{
-		return countingSubtree(node->leftChild) / countingSubtree(node->rightChild);
-	}
-	default:
-		break;
+		const char token = input[i];
+		add(currentElement, input[i]);
 	}
 }
 
-int counting(CountingTree* tree)
+void printTree(TreeElement* element)
 {
-	if (isEmpty(tree))
+	printf("%c ", element->value);
+	if (element->leftChild != nullptr)
 	{
-		return 0;
+		printTree(element->leftChild);
 	}
-	return countingSubtree(tree->root);
-}
-
-void printSubtree(Node* node)
-{
-	if (node == nullptr)
+	if (element->rightChild != nullptr)
 	{
-		return;
+		printTree(element->rightChild);
 	}
-	printf("%c ", node->value);
-	printSubtree(node->leftChild);
-	printSubtree(node->rightChild);
 }
 
-void printTree(CountingTree* tree)
+int counting(char* input)
 {
-	printSubtree(tree->root);
-	printf("\n");
+	Parser* parser = createParser();
+
+	initializationOfTheTree(parser, input);
+
+	printTree(parser->root);
+
+	return 0;
 }
 
-void deleteSubtree(Node* node)
-{
-	if (node == nullptr)
-	{
-		delete node;
-		return;
-	}
-	deleteSubtree(node->leftChild);
-	deleteSubtree(node->rightChild);
-	delete node;
-}
 
-void deleteTree(CountingTree* tree)
-{
-	deleteSubtree(tree->root);
-}
+
+
+
